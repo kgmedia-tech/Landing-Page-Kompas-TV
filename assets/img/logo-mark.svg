@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Kompas TV">
+  <title>Kompas TV</title>
+  <!-- PLACEHOLDER app mark / favicon — ganti dengan ikon resmi Kompas TV. -->
+  <defs>
+    <linearGradient id="km" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%"  stop-color="#6E6E76"/>
+      <stop offset="100%" stop-color="#3F3F42"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="15" fill="url(#km)"/>
+  <!-- jarum kompas -->
+  <path d="M32 13 L40.5 31.5 L32 51 L23.5 31.5 Z" fill="#FFFFFF" opacity="0.95"/>
+  <path d="M32 13 L40.5 31.5 L32 31.5 Z" fill="#1C1C1F" opacity="0.28"/>
+  <circle cx="32" cy="31.5" r="3.4" fill="#3F3F42"/>
+</svg>

@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#0A0A0B" />
+<title>Kompas TV untuk Smart TV — Tonton Berita di Layar Besar</title>
+<meta name="description" content="Aplikasi Kompas TV kini hadir di Smart TV. Live streaming 24 jam, program unggulan, dan tayangan on-demand langsung di layar besar rumah Anda. Gratis." />
+
+<!-- Open Graph -->
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Kompas TV untuk Smart TV" />
+<meta property="og:description" content="Live streaming 24 jam & program unggulan Kompas TV, langsung di layar besar. Gratis." />
+<meta property="og:image" content="assets/img/og-image.jpg" />
+
+<!-- Fonts: Source Sans 3 only -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+<!-- Phosphor Icons (phosphoricons.com) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/regular/style.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/bold/style.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/fill/style.css" />
+
+<link rel="icon" href="assets/img/logo-mark.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+
+<body>
+<a class="skip-link" href="#main">Lewati ke konten utama</a>
+
+<!-- ══════════════════════════════ BACKDROP ══════════════════════════════ -->
+<div class="backdrop" aria-hidden="true">
+  <div class="backdrop__glow backdrop__glow--a"></div>
+  <div class="backdrop__glow backdrop__glow--b"></div>
+  <div class="backdrop__grid"></div>
+</div>
+
+<!-- ══════════════════════════════ NAVBAR ══════════════════════════════ -->
+<header class="nav" id="nav">
+  <div class="nav__inner container">
+    <a class="nav__brand" href="#hero" aria-label="Kompas TV — kembali ke atas">
+      <img src="assets/img/logo-kompastv.png" alt="Kompas TV" class="nav__logo" width="178" height="26" />
+    </a>
+
+    <nav class="nav__links" id="navLinks" aria-label="Navigasi utama">
+      <a href="#hero"     class="nav__link is-active" data-nav>Beranda</a>
+      <a href="#program"  class="nav__link" data-nav>Program Unggulan</a>
+      <a href="#kelebihan" class="nav__link" data-nav>Kelebihan</a>
+      <a href="#panduan"  class="nav__link" data-nav>Cara Install</a>
+    </nav>
+
+    <div class="nav__actions">
+      <button class="btn btn--primary btn--sm nav__cta" data-open-installer type="button">
+        <i class="ph-bold ph-download-simple" aria-hidden="true"></i>
+        <span>Install Sekarang</span>
+      </button>
+      <button class="nav__burger" id="navBurger" type="button"
+              aria-label="Buka menu navigasi" aria-expanded="false" aria-controls="navDrawer">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile drawer -->
+  <div class="nav__drawer" id="navDrawer" hidden>
+    <nav class="nav__drawer-links" aria-label="Navigasi mobile">
+      <a href="#hero"      data-nav-mobile><i class="ph ph-house" aria-hidden="true"></i>Beranda</a>
+      <a href="#program"   data-nav-mobile><i class="ph ph-television-simple" aria-hidden="true"></i>Program Unggulan</a>
+      <a href="#kelebihan" data-nav-mobile><i class="ph ph-sparkle" aria-hidden="true"></i>Kelebihan</a>
+      <a href="#panduan"   data-nav-mobile><i class="ph ph-list-numbers" aria-hidden="true"></i>Cara Install</a>
+    </nav>
+    <button class="btn btn--primary btn--block" data-open-installer type="button">
+      <i class="ph-bold ph-download-simple" aria-hidden="true"></i>
+      <span>Install di Smart TV</span>
+    </button>
+  </div>
+</header>
+<div class="nav__scrim" id="navScrim" hidden></div>
+
+<main id="main">
+
+<!-- ══════════════════════════════ 1. HERO ══════════════════════════════ -->
+<section class="hero section" id="hero">
+  <div class="container hero__grid">
+
+    <div class="hero__copy">
+      <p class="pill reveal" data-reveal>
+        <span class="pill__dot" aria-hidden="true"></span>
+        Baru di Smart TV
+      </p>
+
+      <h1 class="hero__title reveal" data-reveal data-delay="1">
+        Berita Terpercaya,<br />
+        Kini di <span class="grad-text">Layar Terbesar</span> Rumah Anda
+      </h1>
+
+      <p class="hero__lede reveal" data-reveal data-delay="2">
+        Aplikasi Kompas TV resmi hadir di Smart TV. Nikmati <strong>live streaming 24 jam</strong>,
+        program unggulan, dan ribuan tayangan on-demand dalam kualitas HD — tanpa biaya berlangganan.
+      </p>
+
+      <div class="hero__cta reveal" data-reveal data-delay="3">
+        <button class="btn btn--primary btn--lg" data-open-installer type="button">
+          <i class="ph-bold ph-download-simple" aria-hidden="true"></i>
+          <span>Install di Smart TV</span>
+        </button>
+        <a class="btn btn--ghost btn--lg" href="#panduan">
+          <i class="ph-bold ph-list-numbers" aria-hidden="true"></i>
+          <span>Lihat Cara Install</span>
+        </a>
+      </div>
+
+      <ul class="hero__trust reveal" data-reveal data-delay="4">
+        <li><i class="ph-bold ph-check-circle" aria-hidden="true"></i><span><strong>Ringan, gratis</strong>, langsung bisa dipakai tanpa login</span></li>
+      </ul>
+    </div>
+
+    <div class="hero__visual reveal" data-reveal data-delay="2">
+      <img
+        src="assets/img/hero-tv.png"
+        alt="Smart TV menampilkan halaman utama aplikasi Kompas TV, dengan siaran live dan deretan video berita"
+        class="hero__shot"
+        width="1400" height="1164"
+        loading="eager" />
+
+      <div class="hero__chip hero__chip--1" aria-hidden="true">
+        <i class="ph-fill ph-broadcast"></i><span>Live 24 Jam</span>
+      </div>
+      <div class="hero__chip hero__chip--2" aria-hidden="true">
+        <i class="ph-fill ph-high-definition"></i><span>Kualitas HD</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════════════════════════ 2. PROGRAM UNGGULAN ══════════════════════════════ -->
+<section class="section" id="program">
+  <div class="container">
+    <header class="sec-head">
+      <p class="eyebrow reveal" data-reveal><i class="ph-bold ph-television-simple" aria-hidden="true"></i>Program Unggulan</p>
+      <h2 class="sec-title reveal" data-reveal data-delay="1">
+        Program yang Biasa Anda Kejar,<br class="hide-sm" />
+        <span class="grad-text">Sekarang Menunggu di Ruang Keluarga</span>
+      </h2>
+      <p class="sec-lede reveal" data-reveal data-delay="2">
+        Dari wawancara mendalam sampai investigasi lapangan — tonton lengkap, kapan pun Anda mau,
+        di layar yang layak menampungnya.
+      </p>
+    </header>
+
+    <div class="rail-wrap">
+      <ul class="programs" id="programs">
+        <li class="prog reveal" data-reveal style="--p1:#1E3A8A;--p2:#0B1220">
+          <article>
+            <div class="prog__poster">
+              <img src="assets/img/programs/rosi.png" alt="" loading="lazy" onerror="this.remove()" />
+            </div>
+            <div class="prog__body">
+              <h3>ROSI</h3>
+              <p>Wawancara tajam bersama tokoh-tokoh di balik peristiwa besar.</p>
+            </div>
+          </article>
+        </li>
+
+        <li class="prog reveal" data-reveal data-delay="1" style="--p1:#7F1D1D;--p2:#120A12">
+          <article>
+            <div class="prog__poster">
+              <img src="assets/img/programs/dipo-investigasi.png" alt="" loading="lazy" onerror="this.remove()" />
+            </div>
+            <div class="prog__body">
+              <h3>Dipo Investigasi</h3>
+              <p>Menelusuri fakta lapangan dan masalah sosial secara langsung.</p>
+            </div>
+          </article>
+        </li>
+
+        <li class="prog reveal" data-reveal data-delay="2" style="--p1:#155E75;--p2:#08131C">
+          <article>
+            <div class="prog__poster">
+              <img src="assets/img/programs/satu-meja.png" alt="" loading="lazy" onerror="this.remove()" />
+            </div>
+            <div class="prog__body">
+              <h3>Satu Meja The Forum</h3>
+              <p>Semua pihak duduk satu meja, semua argumen diuji terbuka.</p>
+            </div>
+          </article>
+        </li>
+
+        <li class="prog reveal" data-reveal data-delay="3" style="--p1:#065F46;--p2:#07130F">
+          <article>
+            <div class="prog__poster">
+              <img src="assets/img/programs/bola-liar.png" alt="" loading="lazy" onerror="this.remove()" />
+            </div>
+            <div class="prog__body">
+              <h3>Bola Liar</h3>
+              <p>Membongkar sisi gelap yang jarang masuk siaran olahraga.</p>
+            </div>
+          </article>
+        </li>
+      </ul>
+
+      <div class="rail-nav" aria-hidden="true">
+        <button class="rail-btn" type="button" data-rail="-1" aria-label="Geser ke program sebelumnya">
+          <i class="ph-bold ph-caret-left"></i>
+        </button>
+        <button class="rail-btn" type="button" data-rail="1" aria-label="Geser ke program berikutnya">
+          <i class="ph-bold ph-caret-right"></i>
+        </button>
+      </div>
+    </div>
+
+    <p class="sec-foot reveal" data-reveal>
+      …dan puluhan program lainnya, semuanya bisa diputar ulang kapan saja.
+    </p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════ 3. KELEBIHAN ══════════════════════════════ -->
+<section class="section section--alt" id="kelebihan">
+  <div class="container">
+    <header class="sec-head">
+      <p class="eyebrow reveal" data-reveal><i class="ph-bold ph-sparkle" aria-hidden="true"></i>Kenapa di Smart TV</p>
+      <h2 class="sec-title reveal" data-reveal data-delay="1">
+        Berita Layak Ditonton<br class="hide-sm" />
+        <span class="grad-text">Bukan Cuma Dilirik di Genggaman</span>
+      </h2>
+      <p class="sec-lede reveal" data-reveal data-delay="2">
+        Aplikasi Kompas TV di Smart TV dirancang untuk ditonton dari sofa — jelas dibaca dari jauh,
+        mudah dikendalikan dengan remote.
+      </p>
+    </header>
+
+    <div class="bento">
+      <!-- Feature besar dengan screenshot asli -->
+      <article class="bento__item bento__item--wide reveal" data-reveal>
+        <div class="bento__text">
+          <h3>Live Streaming 24 Jam, Tanpa Putus</h3>
+          <p>
+            Siaran Kompas TV mengalir nonstop dalam kualitas HD. Breaking news sampai di layar Anda
+            pada detik yang sama seperti siaran televisi.
+          </p>
+        </div>
+        <div class="bento__visual">
+          <img src="assets/img/promo/live-streaming-24-jam.png" alt="" loading="lazy" onerror="this.remove()" />
+        </div>
+      </article>
+
+      <article class="bento__item reveal" data-reveal data-delay="1">
+        <div class="bento__shot">
+          <img src="assets/img/promo/kualitas-hd.png" alt="" loading="lazy" onerror="this.remove()" />
+        </div>
+        <h3>Kualitas HD di Layar Besar</h3>
+        <p>Grafis, peta, dan data di layar tidak lagi mengecil — semuanya terbaca nyaman dari jarak sofa.</p>
+      </article>
+
+      <article class="bento__item reveal" data-reveal data-delay="2">
+        <div class="bento__shot">
+          <img src="assets/img/promo/putar-ulang.png" alt="" loading="lazy" onerror="this.remove()" />
+        </div>
+        <h3>Ketinggalan? Putar Ulang</h3>
+        <p>Ribuan episode program dan segmen pilihan tersimpan rapi, siap ditonton kapan pun.</p>
+      </article>
+
+      <article class="bento__item reveal" data-reveal data-delay="3">
+        <div class="bento__shot">
+          <img src="assets/img/promo/personalisasi.png" alt="" loading="lazy" onerror="this.remove()" />
+        </div>
+        <h3>Personalisasi</h3>
+        <p>Rekomendasi konten mengikuti preferensi dan apa yang Anda suka sebagai penonton.</p>
+      </article>
+
+      <article class="bento__item reveal" data-reveal data-delay="4">
+        <div class="bento__shot">
+          <img src="assets/img/promo/ditonton-bersama-keluarga.png" alt="" loading="lazy" onerror="this.remove()" />
+        </div>
+        <h3>Ditonton Bersama Keluarga</h3>
+        <p>Satu layar untuk semua orang di ruang keluarga — bukan lagi tontonan sendiri-sendiri.</p>
+      </article>
+
+      <article class="bento__item reveal" data-reveal data-delay="5">
+        <div class="bento__shot">
+          <img src="assets/img/promo/rolls.png" alt="" loading="lazy" onerror="this.remove()" />
+        </div>
+        <h3>Rolls (Short Video)</h3>
+        <p>Nikmati video pendek untuk update informasi yang lebih cepat.</p>
+      </article>
+
+      <article class="bento__item bento__item--accent reveal" data-reveal data-delay="6">
+        <div class="bento__shot">
+          <img src="assets/img/promo/gratis-tanpa-langganan.png" alt="" loading="lazy" onerror="this.remove()" />
+        </div>
+        <h3>Gratis &amp; Tanpa Langganan</h3>
+        <p>Tidak ada biaya bulanan, tidak perlu kartu kredit. Cukup install, langsung tonton.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════ 4. PANDUAN INSTALL ══════════════════════════════ -->
+<section class="section" id="panduan">
+  <div class="container">
+    <header class="sec-head">
+      <p class="eyebrow reveal" data-reveal><i class="ph-bold ph-list-numbers" aria-hidden="true"></i>Panduan Manual</p>
+      <h2 class="sec-title reveal" data-reveal data-delay="1">
+        Cara Install <span class="grad-text">Kompas TV</span>
+      </h2>
+      <p class="sec-lede reveal" data-reveal data-delay="2">
+        Tidak sampai dua menit. Pilih cara yang paling mudah untuk Anda — langsung
+        di Smart TV, atau lewat Google Play dari HP/laptop — lalu ikuti langkahnya
+        satu per satu.
+      </p>
+    </header>
+
+    <div class="guide reveal" data-reveal data-delay="2">
+      <!-- Tabs -->
+      <div class="guide__tabs" role="tablist" aria-label="Pilih sistem operasi Smart TV">
+        <button role="tab" id="tab-android" aria-controls="guidePanel" aria-selected="true"  class="guide__tab is-active" data-guide-tab="android" type="button">
+          <i class="ph-bold ph-android-logo" aria-hidden="true"></i><span>Android&nbsp;TV / Google&nbsp;TV</span>
+        </button>
+        <button role="tab" id="tab-samsunglg" aria-controls="guidePanel" aria-selected="false" class="guide__tab" data-guide-tab="samsunglg" type="button" tabindex="-1">
+          <i class="ph-bold ph-television-simple" aria-hidden="true"></i><span>Samsung&nbsp;TV &amp; LG&nbsp;TV</span>
+        </button>
+        <button role="tab" id="tab-playstore" aria-controls="guidePanel" aria-selected="false" class="guide__tab" data-guide-tab="playstore" type="button" tabindex="-1">
+          <i class="ph-bold ph-google-play-logo" aria-hidden="true"></i><span>Lewat Google&nbsp;Play (HP/Laptop)</span>
+        </button>
+      </div>
+
+      <div class="guide__body">
+        <!-- Stage: mock screenshot -->
+        <div class="guide__stage">
+          <div class="tv tv--compact">
+            <div class="tv__frame">
+              <div class="tv__screen">
+                <div class="step-screen" id="stepScreen" aria-live="polite">
+                  <!-- diisi oleh JS -->
+                </div>
+                <div class="tv__glare" aria-hidden="true"></div>
+              </div>
+            </div>
+            <div class="tv__neck" aria-hidden="true"></div>
+            <div class="tv__base" aria-hidden="true"></div>
+          </div>
+          <p class="guide__hint">
+            <i class="ph ph-info" aria-hidden="true"></i>
+            Tampilan bisa sedikit berbeda tergantung model dan versi sistem TV Anda.
+          </p>
+        </div>
+
+        <!-- Steps list -->
+        <div class="guide__steps" id="guidePanel" role="tabpanel" aria-labelledby="tab-android">
+          <div class="guide__progress" aria-hidden="true"><span id="guideBar"></span></div>
+
+          <ol class="steps" id="stepsList">
+            <!-- diisi oleh JS -->
+          </ol>
+
+          <div class="guide__nav">
+            <button class="btn btn--ghost btn--sm" id="stepPrev" type="button">
+              <i class="ph-bold ph-arrow-left" aria-hidden="true"></i><span>Sebelumnya</span>
+            </button>
+            <span class="guide__count" id="stepCount">Langkah 1 dari 4</span>
+            <button class="btn btn--primary btn--sm" id="stepNext" type="button">
+              <span>Berikutnya</span><i class="ph-bold ph-arrow-right" aria-hidden="true"></i>
+            </button>
+          </div>
+
+          <div class="guide__fallback" id="guideFallback"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ══════════════════════════════ MODAL: PILIH MEREK TV ══════════════════════════════ -->
+<div class="modal" id="installer" hidden>
+  <div class="modal__scrim" data-close-installer></div>
+
+  <div class="modal__panel" role="dialog" aria-modal="true" aria-labelledby="installerTitle" aria-describedby="installerDesc">
+    <div class="modal__head">
+      <div class="modal__head-row">
+        <h2 id="installerTitle">Merek Smart TV Anda apa?</h2>
+        <button class="modal__close" type="button" data-close-installer aria-label="Tutup dialog">
+          <i class="ph-bold ph-x" aria-hidden="true"></i>
+        </button>
+      </div>
+      <p id="installerDesc">Cari merek TV Anda — kami arahkan ke toko aplikasi yang tepat.</p>
+    </div>
+
+    <label class="brand-search" for="brandSearch">
+      <i class="ph-bold ph-magnifying-glass" aria-hidden="true"></i>
+      <input type="search" id="brandSearch" placeholder="Cari merek TV — misalnya Samsung, Sony, LG…" autocomplete="off" />
+    </label>
+
+    <ul class="brands" id="brands" aria-live="polite">
+      <!-- diisi oleh JS dari daftar BRANDS -->
+    </ul>
+
+    <div class="brand-empty" id="brandEmpty" hidden>
+      <span class="brand-empty__icon"><i class="ph-bold ph-magnifying-glass-minus" aria-hidden="true"></i></span>
+      <p><strong>Merek “<span id="brandEmptyQuery"></span>” tidak ditemukan.</strong></p>
+      <p>Kemungkinan aplikasi Kompas TV belum tersedia untuk TV ini. Kalau TV Anda berbasis Android&nbsp;TV / Google&nbsp;TV, tetap bisa coba lewat Google Play.</p>
+      <div class="brand-empty__actions">
+        <button class="btn btn--ghost btn--sm" type="button" data-brand-fallback="android">
+          <i class="ph-bold ph-google-play-logo" aria-hidden="true"></i><span>Coba Google Play</span>
+        </button>
+        <a class="btn btn--ghost btn--sm" href="#panduan" data-close-installer>
+          <i class="ph-bold ph-list-numbers" aria-hidden="true"></i><span>Panduan Manual</span>
+        </a>
+      </div>
+    </div>
+
+    <p class="modal__note">
+      <i class="ph-bold ph-list-numbers" aria-hidden="true"></i>
+      Ingin install manual saja dari TV Anda? Yuk simak caranya
+      <a href="#panduan" data-close-installer>di sini</a>.
+    </p>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<script src="assets/js/main.js" defer></script>
+</body>
+</html>
