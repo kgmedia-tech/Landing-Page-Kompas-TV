@@ -6,11 +6,11 @@
 
 /* ────────────────────────────── 1. TOKENS ───────────────────────────────── */
 :root {
-  /* Surfaces — deep charcoal gradient scale */
-  --bg-base:      #0A0A0B;
-  --bg-800:       #131315;
-  --bg-700:       #1C1C1F;
-  --bg-600:       #26262A;
+  /* Surfaces — deep navy gradient scale */
+  --bg-base:      #04070F;
+  --bg-800:       #06101F;
+  --bg-700:       #0A1730;
+  --bg-600:       #0E2144;
 
   --surface:      rgba(255, 255, 255, 0.038);
   --surface-2:    rgba(255, 255, 255, 0.062);
@@ -19,19 +19,19 @@
   --line:         rgba(255, 255, 255, 0.09);
   --line-strong:  rgba(255, 255, 255, 0.16);
 
-  /* Brand — neutral gray (luminance matched to the previous blue for identical contrast) */
-  --brand-600:    #3F3F42;
-  --brand-500:    #6E6E76;
-  --brand-400:    #96969E;
-  --brand-300:    #C7C7CE;
-  --brand-glow:   rgba(140, 140, 148, 0.38);
+  /* Brand — nuansa merah untuk tombol & elemen interaktif */
+  --brand-600:    #991B1B;
+  --brand-500:    #DC2626;
+  --brand-400:    #F87171;
+  --brand-300:    #FCA5A5;
+  --brand-glow:   rgba(220, 38, 38, 0.42);
   --accent-live:    #E01B0F;   /* putih di atasnya = 4.85:1 (AA) */
   --accent-success: #22C55E;   /* dot "Baru di Smart TV" & checklist "Gratis selamanya" */
 
   /* Text — verified ≥4.5:1 on --bg-base */
-  --text-hi:      #F5F5F7;   /* ~18:1 */
-  --text-mid:     #AEAEB6;   /* ~9:1  */
-  --text-low:     #8B8B94;   /* ~5.3:1 */
+  --text-hi:      #F2F6FF;   /* ~18:1 */
+  --text-mid:     #A9B7D0;   /* ~9:1  */
+  --text-low:     #7E8DA8;   /* ~5.3:1 */
 
   /* Type scale (fluid) */
   --fs-display: clamp(1.875rem, 1.2rem + 3vw, 3.375rem);
@@ -70,7 +70,7 @@
 
   /* Layers */
   --z-backdrop: 0;  --z-content: 10; --z-rail: 20;
-  --z-nav: 100;     --z-drawer: 110; --z-modal: 1000; --z-toast: 1200;
+  --z-nav: 100;     --z-drawer: 110; --z-scroll-top: 150; --z-modal: 1000; --z-toast: 1200;
 }
 
 /* ────────────────────────────── 2. RESET / BASE ─────────────────────────── */
@@ -155,12 +155,12 @@ h1, h2, h3, h4 {
 .backdrop__glow--a {
   width: 60vw; height: 60vw; max-width: 760px; max-height: 760px;
   top: -18vw; right: -12vw;
-  background: radial-gradient(circle, rgba(255,255,255,.10), transparent 68%);
+  background: radial-gradient(circle, rgba(31,99,232,.55), transparent 68%);
 }
 .backdrop__glow--b {
   width: 48vw; height: 48vw; max-width: 620px; max-height: 620px;
   top: 42vh; left: -16vw;
-  background: radial-gradient(circle, rgba(255,255,255,.06), transparent 70%);
+  background: radial-gradient(circle, rgba(62,139,255,.28), transparent 70%);
 }
 .backdrop__grid {
   position: absolute; inset: 0;
@@ -243,7 +243,7 @@ h1, h2, h3, h4 {
   border-bottom: 1px solid transparent;
 }
 .nav.is-stuck {
-  background: rgba(10, 10, 11, 0.72);
+  background: rgba(4, 7, 15, 0.72);
   backdrop-filter: blur(18px) saturate(160%);
   -webkit-backdrop-filter: blur(18px) saturate(160%);
   border-bottom-color: var(--line);
@@ -353,7 +353,7 @@ h1, h2, h3, h4 {
 }
 .section--alt::before {
   content: ''; position: absolute; inset: 0;
-  background: linear-gradient(180deg, transparent, rgba(255, 255, 255, .035) 22%, rgba(255, 255, 255, .035) 78%, transparent);
+  background: linear-gradient(180deg, transparent, rgba(14, 33, 68, .38) 22%, rgba(14, 33, 68, .38) 78%, transparent);
   pointer-events: none;
 }
 .section--alt > .container { position: relative; }
@@ -382,9 +382,9 @@ h1, h2, h3, h4 {
 .eyebrow i { font-size: 1rem; }
 
 .grad-text {
-  background: linear-gradient(100deg, var(--brand-300) 0%, #F0F0F3 40%, var(--brand-400) 100%);
-  -webkit-background-clip: text; background-clip: text;
-  color: transparent;
+  /* Dulu gradient biru — sekarang putih polos, sengaja dilepas dari token
+     --brand-* supaya tetap putih walau warna tombol/aksen berubah. */
+  color: #fff;
 }
 
 .pill {
@@ -486,7 +486,7 @@ h1, h2, h3, h4 {
   display: flex; align-items: center; gap: 8px;
   padding: 9px 15px;
   border-radius: var(--r-pill);
-  background: rgba(18, 18, 20, 0.82);
+  background: rgba(10, 23, 48, 0.82);
   border: 1px solid var(--line-strong);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
@@ -510,7 +510,26 @@ h1, h2, h3, h4 {
   .hero__chip { padding: 7px 12px; font-size: 0.75rem; }
 }
 
-/* ────────────────────────────── 8. TV MOCKUP (panduan install) ──────────── */
+/* ──────────────────────── 8. SCREENSHOT ASLI (panduan install) ─────────── */
+/* Foto produk TV+remote sungguhan (tab Android TV & Samsung/LG TV) — sudah
+   termasuk bezel & remote di dalam gambarnya sendiri, jadi TIDAK dibungkus
+   mockup .tv di bawah (dua "TV" bertumpuk akan tampak aneh). */
+.guide__shot {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #050A14;
+  box-shadow: var(--el-3), 0 0 0 1px rgba(255,255,255,.08);
+}
+.guide__shot img {
+  display: block;
+  width: 100%;
+  height: auto;
+  animation: stepIn var(--dur-slow) var(--ease-out);
+}
+
+/* ────────────────────────────── 8b. TV MOCKUP (panduan install) ─────────── */
+/* Mockup UI buatan CSS — fallback untuk guide yang belum punya screenshot asli. */
 .tv {
   position: relative;
   width: 100%;
@@ -520,7 +539,7 @@ h1, h2, h3, h4 {
   position: relative;
   padding: 8px 8px 10px;
   border-radius: 16px;
-  background: linear-gradient(160deg, #2C2C30 0%, #17171A 46%, #0A0A0B 100%);
+  background: linear-gradient(160deg, #202B42 0%, #0C1425 46%, #060B15 100%);
   box-shadow:
     var(--el-3),
     0 0 0 1px rgba(255,255,255,.08),
@@ -546,13 +565,13 @@ h1, h2, h3, h4 {
 }
 .tv__neck {
   width: 16%; height: 16px; margin: 0 auto;
-  background: linear-gradient(180deg, #202024, #101012);
+  background: linear-gradient(180deg, #1A2438, #0D1424);
   clip-path: polygon(18% 0, 82% 0, 100% 100%, 0 100%);
 }
 .tv__base {
   width: 34%; height: 8px; margin: 0 auto;
   border-radius: 0 0 6px 6px;
-  background: linear-gradient(180deg, #2A2A2E, #0D0D0F);
+  background: linear-gradient(180deg, #222E46, #0B1120);
   box-shadow: 0 10px 28px -8px rgba(0,0,0,.85);
 }
 .tv--compact .tv__frame { padding: 6px 6px 8px; border-radius: 12px; }
@@ -602,8 +621,8 @@ h1, h2, h3, h4 {
 @media (hover: hover) {
   .prog article:hover {
     transform: translateY(-6px);
-    border-color: rgba(255,255,255,.35);
-    box-shadow: 0 22px 48px -22px rgba(0,0,0,.9), 0 0 0 1px rgba(255,255,255,.12);
+    border-color: rgba(252,165,165,.45);
+    box-shadow: 0 22px 48px -22px rgba(0,0,0,.9), 0 0 0 1px rgba(252,165,165,.14);
   }
   .prog article:hover .prog__poster::after { opacity: .5; }
 }
@@ -677,7 +696,7 @@ h1, h2, h3, h4 {
 }
 @media (hover: hover) {
   .bento__item:hover {
-    border-color: rgba(255,255,255,.28);
+    border-color: rgba(252,165,165,.36);
     background: var(--surface-2);
     transform: translateY(-3px);
   }
@@ -694,7 +713,7 @@ h1, h2, h3, h4 {
   aspect-ratio: 3 / 2;
   overflow: hidden;
   margin: calc(var(--bento-pad) * -1) calc(var(--bento-pad) * -1) var(--sp-4);
-  background: radial-gradient(120% 100% at 50% 0%, rgba(255,255,255,.07), transparent 70%);
+  background: radial-gradient(120% 100% at 50% 0%, rgba(62,139,255,.10), transparent 70%);
 }
 .bento__shot img {
   position: absolute; inset: 0;
@@ -714,7 +733,7 @@ h1, h2, h3, h4 {
   gap: var(--sp-8);
   align-items: center;
   background:
-    radial-gradient(90% 130% at 0% 0%, rgba(255,255,255,.07), transparent 62%),
+    radial-gradient(90% 130% at 0% 0%, rgba(31,99,232,.20), transparent 62%),
     var(--surface);
 }
 @media (min-width: 700px) {
@@ -725,16 +744,16 @@ h1, h2, h3, h4 {
 
 .bento__item--accent {
   background:
-    linear-gradient(150deg, rgba(255,255,255,.12), rgba(255,255,255,.03)),
+    linear-gradient(150deg, rgba(31,99,232,.26), rgba(31,99,232,.05)),
     var(--surface);
-  border-color: rgba(255,255,255,.22);
+  border-color: rgba(124,178,255,.28);
 }
 
 /* Screenshot pada kartu lebar (Live Streaming) — kolom visual di sisi kanan */
 .bento__visual {
   border-radius: var(--r-md);
   overflow: hidden;
-  background: radial-gradient(120% 100% at 50% 0%, rgba(255,255,255,.07), transparent 70%);
+  background: radial-gradient(120% 100% at 50% 0%, rgba(62,139,255,.10), transparent 70%);
 }
 .bento__visual img {
   display: block;
@@ -749,7 +768,7 @@ h1, h2, h3, h4 {
 .guide {
   border-radius: var(--r-xl);
   background:
-    radial-gradient(100% 90% at 50% 0%, rgba(255,255,255,.06), transparent 60%),
+    radial-gradient(100% 90% at 50% 0%, rgba(31,99,232,.14), transparent 60%),
     var(--surface);
   border: 1px solid var(--line);
   overflow: hidden;
@@ -785,7 +804,7 @@ h1, h2, h3, h4 {
 .guide__tab.is-active {
   color: #fff;
   background: linear-gradient(135deg, var(--brand-500), var(--brand-600));
-  border-color: rgba(255,255,255,.32);
+  border-color: rgba(252,165,165,.4);
   box-shadow: var(--el-brand);
 }
 
@@ -813,8 +832,8 @@ h1, h2, h3, h4 {
   padding: 5%;
   display: flex; flex-direction: column;
   background:
-    radial-gradient(90% 70% at 15% 0%, rgba(255,255,255,.08), transparent 62%),
-    linear-gradient(170deg, #1C1C20, #0A0A0B);
+    radial-gradient(90% 70% at 15% 0%, rgba(31,99,232,.22), transparent 62%),
+    linear-gradient(170deg, #0A1730, #050A14);
   container-type: inline-size;
   animation: stepIn var(--dur-slow) var(--ease-out);
 }
@@ -841,9 +860,9 @@ h1, h2, h3, h4 {
   font-size: 4cqw; color: rgba(255,255,255,.55);
 }
 .ss__tile.is-focused {
-  background: linear-gradient(150deg, rgba(255,255,255,.4), rgba(255,255,255,.12));
-  border-color: rgba(255,255,255,.85);
-  box-shadow: 0 0 0 0.6cqw rgba(255,255,255,.2);
+  background: linear-gradient(150deg, rgba(248,113,113,.5), rgba(220,38,38,.18));
+  border-color: rgba(252,165,165,.9);
+  box-shadow: 0 0 0 0.6cqw rgba(248,113,113,.22);
   color: #fff;
   animation: focusPop var(--dur-slow) var(--spring);
 }
@@ -855,7 +874,7 @@ h1, h2, h3, h4 {
   margin-top: 3cqw; padding: 2.4cqw 3cqw;
   border-radius: 1.6cqw;
   background: rgba(255,255,255,.08);
-  border: 1px solid rgba(255,255,255,.42);
+  border: 1px solid rgba(252,165,165,.5);
   font-size: 3.2cqw; color: #fff;
 }
 .ss__caret {
@@ -869,8 +888,8 @@ h1, h2, h3, h4 {
   display: flex; align-items: center; gap: 2.6cqw;
   margin-top: 3cqw; padding: 2.6cqw;
   border-radius: 1.8cqw;
-  background: linear-gradient(120deg, rgba(255,255,255,.16), rgba(255,255,255,.04));
-  border: 1px solid rgba(255,255,255,.4);
+  background: linear-gradient(120deg, rgba(248,113,113,.22), rgba(255,255,255,.04));
+  border: 1px solid rgba(252,165,165,.55);
 }
 .ss__result-ico {
   width: 10cqw; height: 10cqw; flex: none;
@@ -944,7 +963,7 @@ h1, h2, h3, h4 {
 .step:active { transform: scale(.99); }
 .step.is-active {
   background: var(--surface-2);
-  border-color: rgba(255,255,255,.26);
+  border-color: rgba(252,165,165,.34);
 }
 .step__num {
   width: 34px; height: 34px;
@@ -958,7 +977,7 @@ h1, h2, h3, h4 {
 }
 .step.is-active .step__num {
   background: linear-gradient(135deg, var(--brand-500), var(--brand-600));
-  border-color: rgba(255,255,255,.4);
+  border-color: rgba(252,165,165,.5);
   color: #fff;
 }
 .step__t { display: block; font-size: 0.9375rem; font-weight: 600; margin-bottom: 4px; }
@@ -982,17 +1001,6 @@ h1, h2, h3, h4 {
   .guide__nav .btn { flex: 1 1 auto; }
   .guide__count { order: 3; width: 100%; text-align: center; margin-top: var(--sp-1); }
 }
-
-.guide__fallback {
-  margin-top: var(--sp-5);
-  padding: var(--sp-4);
-  border-radius: var(--r-md);
-  background: rgba(255,255,255,.045);
-  border: 1px solid rgba(255,255,255,.16);
-  font-size: var(--fs-xs); color: var(--text-mid); line-height: 1.6;
-}
-.guide__fallback strong { color: var(--text-hi); }
-.guide__fallback a { color: var(--brand-300); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
 
 /* ────────────────────────────── 13. MODAL ───────────────────────────────── */
 .modal {
@@ -1023,8 +1031,8 @@ h1, h2, h3, h4 {
   padding-bottom: calc(clamp(24px, 4vw, 34px) + env(safe-area-inset-bottom));
   border-radius: var(--r-xl) var(--r-xl) 0 0;
   background:
-    radial-gradient(90% 60% at 50% 0%, rgba(255,255,255,.08), transparent 62%),
-    #141416;
+    radial-gradient(90% 60% at 50% 0%, rgba(31,99,232,.22), transparent 62%),
+    #0A1226;
   border: 1px solid var(--line-strong);
   box-shadow: var(--el-3);
   animation: sheetIn var(--dur-slow) var(--ease-out);
@@ -1057,114 +1065,131 @@ h1, h2, h3, h4 {
 .modal__head h2 { font-size: 1.375rem; }
 .modal__head p  { font-size: var(--fs-sm); color: var(--text-mid); }
 
-/* Kolom cari merek TV */
-.brand-search {
-  display: flex; align-items: center; gap: 10px;
-  min-height: 48px;
-  margin-bottom: var(--sp-4);
-  padding: 0 14px;
-  border-radius: var(--r-md);
-  background: var(--surface);
-  border: 1px solid var(--line-strong);
-  transition: border-color var(--dur-fast) var(--ease-out), background-color var(--dur-fast) var(--ease-out);
+/* Grid pilih merek TV — dipakai di modal & section "Panduan Merek TV" */
+.brand-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--sp-3);
 }
-.brand-search:has(input:focus) { border-color: rgba(255,255,255,.4); background: var(--surface-2); }
-.brand-search i { flex: none; color: var(--text-low); font-size: 1.05rem; }
-.brand-search input {
-  flex: 1; min-width: 0; height: 46px;
-  background: none; border: 0; outline: 0;
-  color: var(--text-hi); font-family: inherit; font-size: 1rem;
-}
-.brand-search input::placeholder { color: var(--text-low); }
-.brand-search input::-webkit-search-cancel-button { -webkit-appearance: none; }
-
-.brands {
-  display: flex; flex-direction: column; gap: var(--sp-2);
-  max-height: 336px;
-  overflow-y: auto;
-  scrollbar-width: thin;
-  margin-inline: -4px; padding: 0 4px 2px;
-}
-.brands[hidden] { display: none; }
-.brand {
-  display: flex; align-items: center; gap: var(--sp-3);
+.brand-tile {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 10px;
   width: 100%;
-  min-height: 68px;
-  padding: 13px 16px;
+  min-height: 108px;
+  padding: 16px 10px;
   border-radius: var(--r-md);
   background: var(--surface);
   border: 1px solid var(--line);
-  text-align: left;
+  text-align: center;
   transition: background-color var(--dur-fast) var(--ease-out),
               border-color var(--dur-fast) var(--ease-out),
               transform var(--dur-fast) var(--ease-out);
 }
-.brand:hover  { background: var(--surface-2); border-color: rgba(255,255,255,.32); }
-.brand:active { transform: scale(.982); }
-.brand__ico {
+.brand-tile:hover  { background: var(--surface-2); border-color: rgba(252,165,165,.4); transform: translateY(-2px); }
+.brand-tile:active { transform: scale(.97); }
+.brand-tile__ico {
   position: relative;
   display: flex; align-items: center; justify-content: center;
-  width: 42px; height: 42px; flex: none;
-  border-radius: 11px;
-  overflow: hidden;
-  background: linear-gradient(150deg, rgba(255,255,255,.16), rgba(255,255,255,.05));
-  border: 1px solid rgba(255,255,255,.18);
+  width: 100%; height: 34px;
 }
-.brand__ico:has(img) {
-  /* File logo asli berukuran 200×80 (rasio 2,5:1) — badge ikut rasio itu,
-     bukan dipaksa kotak, supaya wordmark tidak gepeng/terpotong. */
-  width: 100px; height: 40px;
-  border-radius: 8px;
-  padding: 5px 7px;
-  box-sizing: border-box;
+.brand-tile__ico:has(img) {
   /* Logo resmi butuh latar terang agar warna aslinya terbaca */
   background: #fff;
-  border-color: rgba(255,255,255,.5);
+  border-radius: 7px;
+  padding: 4px 8px;
+  box-sizing: border-box;
 }
-.brand__ico img {
-  width: 100%; height: 100%;
-  object-fit: contain;
-}
-.brand__ico:has(img) .brand__initial { display: none; }
-.brand__initial { font-size: 1.05rem; font-weight: 700; color: var(--brand-300); }
-.brand__txt { min-width: 0; }
-.brand__txt strong { display: block; font-size: 0.9375rem; font-weight: 600; }
-.brand__txt small  {
-  display: block; font-size: var(--fs-xs); color: var(--text-low);
-  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-}
-.brand__go { margin-left: auto; flex: none; color: var(--text-low); font-size: 1rem; }
-.brand:hover .brand__go { color: var(--brand-300); }
-
-/* Empty state — muncul saat pencarian tidak menemukan merek apa pun */
-.brand-empty { padding: var(--sp-5) var(--sp-3) var(--sp-2); text-align: center; }
-.brand-empty__icon {
+.brand-tile__ico img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.brand-tile__ico:has(img) .brand-tile__initial { display: none; }
+.brand-tile__initial {
   display: grid; place-items: center;
-  width: 48px; height: 48px;
-  margin: 0 auto var(--sp-3);
-  border-radius: 50%;
-  background: var(--surface-2);
-  color: var(--text-low);
-  font-size: 1.4rem;
+  width: 34px; height: 34px;
+  border-radius: 9px;
+  background: linear-gradient(150deg, rgba(248,113,113,.26), rgba(220,38,38,.08));
+  border: 1px solid rgba(252,165,165,.22);
+  font-size: 1rem; font-weight: 700; color: var(--brand-300);
 }
-.brand-empty p {
-  max-width: 42ch; margin-inline: auto;
-  font-size: var(--fs-sm); color: var(--text-mid); line-height: 1.55;
-  margin-bottom: var(--sp-2);
-}
-.brand-empty p strong { color: var(--text-hi); }
-.brand-empty__actions {
-  display: flex; flex-wrap: wrap; justify-content: center; gap: var(--sp-2);
-  margin-top: var(--sp-4);
-}
+.brand-tile__name { font-size: var(--fs-xs); font-weight: 600; color: var(--text-hi); }
+.brand-tile__os   { margin-top: -4px; font-size: 10px; font-weight: 600; letter-spacing: .02em; color: var(--text-low); }
 
-.modal__note {
+/* Reassurance — selalu tampil, pengganti opsi "merek lain".
+   Sengaja NETRAL (senada dengan .brand-tile di atasnya, bukan merah) — ini
+   cuma info alternatif, bukan peringatan/error, jadi warna merah bisa
+   disalahartikan sebagai warning/danger.
+   PENTING: teksnya harus dibungkus <span> di HTML, bukan langsung jadi anak
+   flex bersama <i> — kalau tidak, browser membuat setiap potongan teks lepas
+   (termasuk link "di sini") jadi kolom flex terpisah, sehingga link melompat
+   ke kanan alih-alih mengalir wajar di dalam paragraf. */
+.modal__reassure {
   display: flex; align-items: flex-start; gap: 8px;
-  margin-top: var(--sp-5);
-  font-size: var(--fs-xs); color: var(--text-low); line-height: 1.55;
+  margin-top: var(--sp-4);
+  padding: var(--sp-4);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  font-size: var(--fs-xs); color: var(--text-mid); line-height: 1.55;
 }
-.modal__note i { flex: none; margin-top: 2px; font-size: 1rem; }
-.modal__note a { color: var(--brand-300); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; white-space: nowrap; }
+.modal__reassure i { flex: none; margin-top: 2px; font-size: 1rem; color: var(--text-mid); }
+.modal__reassure a { color: var(--text-hi); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; white-space: nowrap; }
+
+/* Tampilan instruksi ringkas setelah merek dipilih */
+.brand-detail__back {
+  display: inline-flex; align-items: center; gap: 8px;
+  margin-bottom: var(--sp-5);
+  padding: 8px 4px;
+  font-size: var(--fs-sm); font-weight: 600; color: var(--text-mid);
+  transition: color var(--dur-fast) var(--ease-out);
+}
+.brand-detail__back:hover { color: var(--text-hi); }
+.brand-detail__back i { font-size: 1rem; }
+
+.brand-detail__head {
+  display: flex; align-items: center; gap: var(--sp-3);
+  margin-bottom: var(--sp-5);
+}
+.brand-detail__head .brand-tile__ico { width: 56px; height: 40px; flex: none; }
+.brand-detail__head-text { display: flex; flex-direction: column; gap: 2px; }
+.brand-detail__head h3 { font-size: 1.125rem; }
+.brand-detail__os { font-size: var(--fs-xs); font-weight: 600; color: var(--text-mid); }
+
+/* Link "install langsung di TV" — hanya untuk brand Android TV, di bawah
+   tombol CTA. Bukan tombol/kotak (tanpa border/background) — cuma teks
+   tertaut, karena aksinya membawa user pindah ke section lain (#panduan),
+   bukan mengubah apa pun di modal ini. */
+.brand-detail__toggle {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%;
+  margin-top: var(--sp-3);
+  padding: 8px;
+  font-size: var(--fs-sm); font-weight: 600; color: var(--text-hi);
+  transition: color var(--dur-fast) var(--ease-out);
+}
+/* Netral (putih), bukan warna brand — link navigasi ini bukan tombol
+   ke-2/CTA alternatif, jadi tidak perlu ditonjolkan dengan warna merah. */
+.brand-detail__toggle:hover  { color: var(--text-mid); text-decoration: underline; text-underline-offset: 3px; }
+.brand-detail__toggle:active { transform: scale(.98); }
+.brand-detail__toggle i { font-size: 1.05rem; }
+
+.brand-detail__steps {
+  display: flex; flex-direction: column; gap: var(--sp-3);
+  margin-bottom: var(--sp-6);
+}
+.brand-detail__step {
+  display: grid;
+  grid-template-columns: 26px minmax(0, 1fr);
+  gap: var(--sp-3);
+}
+.brand-detail__step-num {
+  width: 26px; height: 26px;
+  display: grid; place-items: center;
+  border-radius: 50%;
+  background: var(--surface-3);
+  border: 1px solid var(--line-strong);
+  font-size: var(--fs-xs); font-weight: 700; color: var(--text-mid);
+  font-variant-numeric: tabular-nums;
+}
+.brand-detail__step-text strong { display: block; font-size: 0.875rem; font-weight: 600; color: var(--text-hi); margin-bottom: 2px; }
+.brand-detail__step-desc { display: block; font-size: var(--fs-xs); color: var(--text-mid); line-height: 1.5; }
 
 /* ────────────────────────────── 14. TOAST ───────────────────────────────── */
 .toast {
@@ -1188,6 +1213,38 @@ h1, h2, h3, h4 {
 @keyframes toastIn {
   from { opacity: 0; transform: translate(-50%, 16px); }
   to   { opacity: 1; transform: translate(-50%, 0); }
+}
+
+/* ────────────────────────── 14b. SCROLL TO TOP ─────────────────────────── */
+/* Muncul begitu user scroll melewati section Program Unggulan (#program) —
+   dikontrol lewat kelas .is-visible dari main.js (IntersectionObserver),
+   bukan lewat [hidden] langsung, supaya transisi fade/slide-nya jalan. */
+.scroll-top {
+  position: fixed;
+  right: 20px; bottom: calc(24px + env(safe-area-inset-bottom));
+  z-index: var(--z-scroll-top);
+  display: grid; place-items: center;
+  width: 46px; height: 46px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--brand-500), var(--brand-600));
+  color: #fff;
+  font-size: 1.15rem;
+  box-shadow: var(--el-brand);
+  opacity: 0; visibility: hidden;
+  transform: translateY(14px) scale(.9);
+  transition: opacity var(--dur-mid) var(--ease-out),
+              transform var(--dur-mid) var(--ease-out),
+              visibility var(--dur-mid) linear,
+              box-shadow var(--dur-fast) var(--ease-out);
+}
+.scroll-top.is-visible {
+  opacity: 1; visibility: visible;
+  transform: translateY(0) scale(1);
+}
+.scroll-top:hover  { box-shadow: 0 16px 40px -10px var(--brand-glow); }
+.scroll-top:active { transform: scale(.92); }
+@media (min-width: 640px) {
+  .scroll-top { right: 28px; }
 }
 
 /* ────────────────────────────── 15. REVEAL MOTION ───────────────────────── */

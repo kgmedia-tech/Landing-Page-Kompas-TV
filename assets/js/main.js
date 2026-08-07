@@ -22,31 +22,6 @@
   };
 
   /* ══════════════════════════════════════════════════════════════════════
-     DAFTAR MEREK TV — dipakai untuk fitur pencarian pada modal installer.
-     "group" menentukan tujuan: 'samsung' | 'lg' | 'android' (→ Google Play).
-     "logo" = nama file di assets/img/brands/<logo>.png (aset asli dari tim);
-     kalau kosong, badge memakai inisial huruf sebagai pengganti yang jujur
-     (bukan logo asli, karena belum ada file logonya).
-     Merek yang TIDAK ada di daftar ini akan muncul sebagai "tidak ditemukan"
-     saat dicari — artinya belum terverifikasi didukung aplikasi Kompas TV.
-     ══════════════════════════════════════════════════════════════════════ */
-  var BRANDS = [
-    { name: 'Samsung',        os: 'Tizen OS',   group: 'samsung',  logo: 'samsung' },
-    { name: 'LG',             os: 'webOS',      group: 'lg',       logo: 'lg' },
-    { name: 'Sony',           os: 'Android TV', group: 'android',  logo: 'sony' },
-    { name: 'Xiaomi / Mi TV', os: 'Android TV', group: 'android',  logo: 'xiaomi' },
-    { name: 'Panasonic',      os: 'Android TV', group: 'android',  logo: 'panasonic' },
-    { name: 'Sharp',          os: 'Android TV', group: 'android',  logo: 'sharp' },
-    { name: 'TCL',            os: 'Android TV', group: 'android',  logo: 'tcl' },
-    { name: 'Polytron',       os: 'Android TV', group: 'android',  logo: 'polytron' },
-    { name: 'Realme',         os: 'Android TV', group: 'android',  logo: 'realme' },
-    { name: 'Changhong',      os: 'Android TV', group: 'android',  logo: 'changhong' },
-    { name: 'Toshiba',        os: 'Android TV', group: 'android',  logo: null },
-    { name: 'Hisense',        os: 'Android TV', group: 'android',  logo: null },
-    { name: 'Coocaa',         os: 'Android TV', group: 'android',  logo: null }
-  ];
-
-  /* ══════════════════════════════════════════════════════════════════════
      HELPERS
      ══════════════════════════════════════════════════════════════════════ */
   var $  = function (s, c) { return (c || document).querySelector(s); };
@@ -187,26 +162,59 @@
   }
 
   /* ══════════════════════════════════════════════════════════════════════
+     SCROLL TO TOP — muncul begitu user melewati section Program Unggulan
+     ══════════════════════════════════════════════════════════════════════ */
+  var scrollTopBtn = $('#scrollTop');
+  var programSection = $('#program');
+
+  if (scrollTopBtn && programSection) {
+    if ('IntersectionObserver' in window) {
+      // Tombol muncul begitu #program keluar dari viewport bagian atas (sudah
+      // dilewati saat scroll ke bawah), dan hilang lagi begitu user scroll
+      // balik ke atas hingga #program terlihat lagi.
+      var scrollTopSpy = new IntersectionObserver(function (entries) {
+        var e = entries[0];
+        // isIntersecting = false & boundingClientRect di atas viewport (top < 0)
+        // berarti section sudah terlewati ke atas (user sudah scroll ke bawah).
+        var passed = !e.isIntersecting && e.boundingClientRect.top < 0;
+        scrollTopBtn.classList.toggle('is-visible', passed);
+      }, { threshold: 0 });
+      scrollTopSpy.observe(programSection);
+    } else {
+      // Fallback tanpa IntersectionObserver: pakai posisi scroll biasa.
+      window.addEventListener('scroll', function () {
+        var passed = window.scrollY > programSection.offsetTop + programSection.offsetHeight;
+        scrollTopBtn.classList.toggle('is-visible', passed);
+      }, { passive: true });
+    }
+
+    scrollTopBtn.addEventListener('click', function () {
+      window.scrollTo({ top: 0, behavior: prefersReduced ? 'auto' : 'smooth' });
+    });
+  }
+
+  /* ══════════════════════════════════════════════════════════════════════
      MODAL — pilih merek Smart TV → arahkan ke store yang tepat
      ══════════════════════════════════════════════════════════════════════ */
-  var modal      = $('#installer');
-  var panel      = $('.modal__panel', modal);
-  var brandList  = $('#brands');
-  var brandInput = $('#brandSearch');
-  var brandEmpty = $('#brandEmpty');
-  var brandEmptyQuery = $('#brandEmptyQuery');
-  var lastFocus  = null;
+  var modal            = $('#installer');
+  var panel            = $('.modal__panel', modal);
+  var brandGridView    = $('#brandGridView');
+  var brandDetailView  = $('#brandDetailView');
+  var brandDetailBack  = $('#brandDetailBack');
+  var brandDetailHead   = $('#brandDetailHead');
+  var brandDetailSteps  = $('#brandDetailSteps');
+  var brandDetailToggle = $('#brandDetailToggle');
+  var brandDetailCta    = $('#brandDetailCta');
+  var lastFocus         = null;
 
   function openModal() {
     lastFocus = document.activeElement;
     modal.hidden = false;
     document.body.classList.add('is-locked');
     setDrawer(false);
-    brandInput.value = '';
-    brandEmpty.hidden = true;
-    renderBrands(BRANDS);
-    // fokus ke kolom cari supaya keyboard user langsung bisa mengetik
-    brandInput.focus();
+    showBrandGrid(); // selalu mulai dari grid merek, bukan dari instruksi terakhir
+    var first = $('.brand-tile', brandGridView);
+    if (first) first.focus();
   }
 
   function closeModal() {
@@ -236,7 +244,13 @@
     else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
   });
 
-  /* ─── Routing per merek ───────────────────────────────────────────────── */
+  /* ─── Routing per merek ───────────────────────────────────────────────────
+     Catatan: Samsung & LG TIDAK punya tombol store di sini lagi — kedua merek
+     itu tidak bisa diinstall langsung lewat link store dari perangkat ini
+     (Samsung TV Apps / LG Content Store hanya halaman info umum, bukan link
+     instalasi). Instruksinya cukup langkah-langkah yang dilakukan di TV
+     (lihat GUIDES.samsunglg) — modal berhenti di daftar langkah, tanpa CTA
+     ataupun catatan pengganti apa pun untuk kedua merek ini. */
   function handleBrand(brand) {
     switch (brand) {
       case 'android':
@@ -254,99 +268,113 @@
         }
         break;
 
-      case 'samsung':
-        toast('Membuka halaman Samsung TV Apps.', 'television-simple');
-        openExternal(STORE.samsung);
-        break;
-
-      case 'lg':
-        toast('Membuka LG Content Store.', 'television-simple');
-        openExternal(STORE.lg);
-        break;
-
       default:
-        return; // seharusnya tidak pernah terjadi — semua brand punya group valid
+        return; // seharusnya tidak pernah terjadi — CTA hanya tampil untuk brand Android TV
     }
     closeModal();
   }
 
-  function goToGuide() {
-    var target = $('#panduan');
-    if (!target) return;
-    target.scrollIntoView({ behavior: prefersReduced ? 'auto' : 'smooth', block: 'start' });
-    setTimeout(function () {
-      var tab = $('.guide__tab.is-active');
-      if (tab) tab.focus({ preventScroll: true });
-    }, prefersReduced ? 0 : 650);
+  /* ─── Tampilan instruksi singkat setelah merek dipilih (di dalam modal) ──
+     Samsung & LG pakai langkah "samsunglg" (dilakukan langsung di TV, tidak
+     ada CTA store — lihat catatan di handleBrand). Brand Android TV
+     (Sony/TCL/Xiaomi/Infinix) pakai langkah "playstore" — karena landing page
+     ini dibuka dari HP/laptop, memandu lewat Google Play di perangkat yang
+     sedang dipegang user lebih relevan. Untuk yang justru mengakses landing
+     page ini dari TV-nya sendiri, ada link #brandDetailToggle yang menutup
+     modal ini dan membawa mereka ke section #panduan (tab Android TV) — bukan
+     mengganti langkah di dalam modal. ─────────────────────────────────────── */
+  var ANDROID_ONLY_GROUPS = { samsung: true, lg: true }; // brand YANG BUKAN Android TV
+  function isAndroidGroup(group) { return !ANDROID_ONLY_GROUPS[group]; }
+
+  function guideKeyForGroup(group) {
+    return (group === 'samsung' || group === 'lg') ? 'samsunglg' : 'playstore';
+  }
+  function ctaLabelForGroup(group) {
+    return 'Buka Google Play'; // hanya brand Android TV yang punya CTA ini
+  }
+  function brandDetailStepHTML(step, i) {
+    return '<li class="brand-detail__step">' +
+      '<span class="brand-detail__step-num">' + (i + 1) + '</span>' +
+      '<span class="brand-detail__step-text">' +
+        '<strong>' + step.t + '</strong>' +
+        '<span class="brand-detail__step-desc">' + step.d + '</span>' +
+      '</span>' +
+    '</li>';
   }
 
-  /* ─── Pencarian merek TV ──────────────────────────────────────────────── */
-  function initials(name) {
-    return name.replace(/\/.*$/, '').trim().charAt(0).toUpperCase();
+  function showBrandGrid() {
+    brandGridView.hidden = false;
+    brandDetailView.hidden = true;
   }
 
-  function brandRowHTML(b) {
-    var logo = b.logo
-      ? '<img src="assets/img/brands/' + b.logo + '.png" alt="" onerror="this.remove()" />'
-      : '';
-    return (
-      '<li>' +
-        '<button class="brand" type="button" data-group="' + b.group + '">' +
-          '<span class="brand__ico">' +
-            logo +
-            '<span class="brand__initial">' + initials(b.name) + '</span>' +
-          '</span>' +
-          '<span class="brand__txt">' +
-            '<strong>' + b.name + '</strong>' +
-            '<small>' + b.os + '</small>' +
-          '</span>' +
-          '<i class="ph-bold ph-arrow-up-right brand__go" aria-hidden="true"></i>' +
-        '</button>' +
-      '</li>'
-    );
+  function showBrandDetail(tile) {
+    var group   = tile.dataset.group;
+    var name    = $('.brand-tile__name', tile).textContent;
+    var os      = $('.brand-tile__os', tile).textContent;
+    var icoHTML = $('.brand-tile__ico', tile).innerHTML;
+    var guide   = GUIDES[guideKeyForGroup(group)];
+
+    brandDetailHead.innerHTML =
+      '<span class="brand-tile__ico">' + icoHTML + '</span>' +
+      '<span class="brand-detail__head-text"><h3>' + name + '</h3><span class="brand-detail__os">' + os + '</span></span>';
+
+    brandDetailSteps.innerHTML = guide.steps.map(brandDetailStepHTML).join('');
+
+    // CTA "Buka Google Play" hanya relevan untuk brand Android TV — Samsung
+    // & LG tidak pernah punya CTA store (lihat catatan di handleBrand).
+    var showCta = isAndroidGroup(group);
+    brandDetailCta.hidden = !showCta;
+    if (showCta) {
+      brandDetailCta.innerHTML =
+        '<i class="ph-bold ph-arrow-square-out" aria-hidden="true"></i><span>' + ctaLabelForGroup(group) + '</span>';
+      brandDetailCta.onclick = function () { handleBrand(group); };
+    }
+
+    // Link "install langsung di TV" — hanya untuk brand Android TV. Klik-nya
+    // menutup modal & membawa ke section #panduan (tab Android TV), lihat
+    // listener #brandDetailToggle di bawah — bukan mengubah apa pun di sini.
+    brandDetailToggle.hidden = !isAndroidGroup(group);
+    if (isAndroidGroup(group)) {
+      brandDetailToggle.innerHTML =
+        '<i class="ph-bold ph-television-simple" aria-hidden="true"></i><span>Ingin install langsung dari TV Anda? Lihat caranya</span>';
+    }
+
+    brandGridView.hidden = true;
+    brandDetailView.hidden = false;
+    brandDetailBack.focus();
   }
 
-  function renderBrands(list) {
-    brandList.innerHTML = list.map(brandRowHTML).join('');
-    brandList.hidden = list.length === 0;
-  }
-
-  function filterBrands(query) {
-    var q = query.trim().toLowerCase();
-    if (!q) return BRANDS;
-    return BRANDS.filter(function (b) { return b.name.toLowerCase().indexOf(q) !== -1; });
-  }
-
-  function runSearch() {
-    var query = brandInput.value;
-    var matches = filterBrands(query);
-    renderBrands(matches);
-
-    var showEmpty = matches.length === 0 && query.trim() !== '';
-    brandEmpty.hidden = !showEmpty;
-    if (showEmpty) brandEmptyQuery.textContent = query.trim();
-  }
-
-  brandInput.addEventListener('input', runSearch);
-  brandInput.addEventListener('keydown', function (e) {
-    if (e.key !== 'Enter') return;
-    var matches = filterBrands(brandInput.value);
-    if (matches.length === 1) { e.preventDefault(); handleBrand(matches[0].group); }
+  // Grid di dalam modal — klik merek tampilkan instruksi dulu, belum langsung pindah.
+  $('#brands').addEventListener('click', function (e) {
+    var tile = e.target.closest ? e.target.closest('.brand-tile') : null;
+    if (tile) showBrandDetail(tile);
   });
 
-  // Delegasi klik — daftar brand di-render ulang tiap kali user mengetik,
-  // jadi listener dipasang sekali di container, bukan per elemen.
-  brandList.addEventListener('click', function (e) {
-    var btn = e.target.closest ? e.target.closest('.brand') : null;
-    if (btn) handleBrand(btn.dataset.group);
+  // "Ingin install langsung dari TV Anda? Lihat caranya" — tutup modal,
+  // ganti tab Panduan Install ke Android TV, lalu scroll ke section-nya.
+  // setPlatform() & stopAuto() didefinisikan lebih bawah di file ini, tapi
+  // aman dipanggil di sini karena function declaration di-hoist dan handler
+  // ini baru jalan setelah seluruh script selesai dieksekusi (dipicu klik user).
+  brandDetailToggle.addEventListener('click', function () {
+    closeModal();
+    stopAuto();
+    setPlatform('android');
+    var panduan = $('#panduan');
+    if (panduan) panduan.scrollIntoView({ behavior: prefersReduced ? 'auto' : 'smooth', block: 'start' });
   });
 
-  $$('[data-brand-fallback]').forEach(function (b) {
-    b.addEventListener('click', function () { handleBrand(b.dataset.brandFallback); });
+  brandDetailBack.addEventListener('click', function () {
+    showBrandGrid();
+    var first = $('.brand-tile', brandGridView);
+    if (first) first.focus();
   });
 
   /* ══════════════════════════════════════════════════════════════════════
      PANDUAN INSTALL MANUAL — data per platform
+     Catatan: field `note` di tiap guide TIDAK ditampilkan di mana pun saat
+     ini (kotak "Aplikasi tidak muncul?" di section #panduan & di modal
+     install sudah dihapus atas permintaan) — sengaja dipertahankan sebagai
+     data kalau suatu saat butuh ditampilkan lagi di tempat lain.
      ══════════════════════════════════════════════════════════════════════ */
   var GUIDES = {
     android: {
@@ -408,6 +436,11 @@
       note: 'Opsi "Instal di perangkat lain" tidak muncul? Coba buka Google Play lewat <strong>browser di komputer/laptop</strong> (bukan aplikasi Play Store di HP) — tampilan ini paling lengkap di sana. Pastikan juga Smart TV Anda sudah pernah dinyalakan dan tersambung internet minimal sekali.',
       steps: [
         {
+          t: 'Pastikan Akun Google Anda Sama',
+          d: 'Sebelum mulai, pastikan akun Google yang Anda gunakan pada laptop/HP dengan yang ada pada Smart TV itu menggunakan akun yang sama ya.',
+          screen: resultScreen('Akun Google Anda', 'Harus sama dengan akun di Smart TV', 'Lanjut', false, 'Sudah dicek?', 'ph-check', 'ph-user-circle')
+        },
+        {
           t: 'Buka atau Kunjungi Google Play Store',
           d: 'Kunjungi Google Play Store melalui website atau aplikasi pada smartphone Android Anda.',
           screen: searchScreen('Google Play', '', 'Ketik nama aplikasi', 'ph-cursor-click')
@@ -419,18 +452,8 @@
         },
         {
           t: 'Pilih Install di Perangkat Lain',
-          d: 'Silakan pilih install pada perangkat lain dan pilih tipe Smart TV Anda.',
+          d: 'Silakan pilih install pada perangkat lain, pilih tipe Smart TV Anda, lalu klik Install dan tunggu prosesnya hingga selesai.',
           screen: gridScreen('Google Play', 'Instal di perangkat lain', ['ph-device-mobile', 'ph-television-simple', 'ph-laptop', 'ph-device-tablet'], 1, 'ph-google-play-logo', 'Klik untuk pilih', 'ph-cursor-click')
-        },
-        {
-          t: 'Pastikan Akun Google Anda Sama',
-          d: 'Sebelum install, pastikan akun Google yang Anda gunakan pada laptop/HP dengan yang ada pada Smart TV itu menggunakan akun yang sama ya.',
-          screen: resultScreen('Akun Google Anda', 'Harus sama dengan akun di Smart TV', 'Lanjut', false, 'Sudah dicek?', 'ph-check', 'ph-user-circle')
-        },
-        {
-          t: 'Klik Install',
-          d: 'Setelah itu Anda bisa klik Install dan tunggu prosesnya hingga selesai.',
-          screen: resultScreen('Kompas TV — Live Streaming', 'Kompas TV · Berita', 'Install', false, 'Klik Install', 'ph-cursor-click')
         },
         {
           t: 'Selesai',
@@ -489,14 +512,49 @@
   var index   = 0;
   var autoTimer = null;
 
-  var stepScreen = $('#stepScreen');
-  var stepsList  = $('#stepsList');
-  var guideBar   = $('#guideBar');
-  var stepCount  = $('#stepCount');
-  var btnPrev    = $('#stepPrev');
-  var btnNext    = $('#stepNext');
-  var fallback   = $('#guideFallback');
-  var guidePanel = $('#guidePanel');
+  var stepScreen   = $('#stepScreen');
+  var stepsList    = $('#stepsList');
+  var guideBar     = $('#guideBar');
+  var stepCount    = $('#stepCount');
+  var btnPrev      = $('#stepPrev');
+  var btnNext      = $('#stepNext');
+  var guidePanel   = $('#guidePanel');
+  var tvMock       = $('#tvMock');
+  var guideShot    = $('#guideShot');
+  var guideShotImg = $('#guideShotImg');
+
+  // Screenshot produk asli per guide. Urutan array HARUS sejajar dengan
+  // urutan GUIDES[key].steps. Kalau elemennya `undefined`/index-nya tidak
+  // ada, renderScreen() otomatis fallback ke mockup .tv buatan CSS untuk
+  // step itu saja (tidak mempengaruhi step lain di guide yang sama).
+  var SHOT_IMAGES = {
+    android: [
+      'assets/img/guide/android/1.jpg',
+      'assets/img/guide/android/2.jpg',
+      'assets/img/guide/android/3.jpg',
+      'assets/img/guide/android/4.jpg'
+    ],
+    samsunglg: [
+      'assets/img/guide/samsunglg/1.jpg',
+      'assets/img/guide/samsunglg/2.jpg',
+      'assets/img/guide/samsunglg/3.jpg',
+      'assets/img/guide/samsunglg/4.jpg'
+    ],
+    // 5 langkah teks, 5 foto — "Pilih Install di Perangkat Lain" (step 4)
+    // sekarang juga mencakup teks "klik Install" (step lamanya sudah
+    // digabung, karena keduanya memang satu dialog yang sama di Google
+    // Play asli). Step "Selesai" (index 4) tidak punya foto Google Play-nya
+    // sendiri (instalasinya rampung di TV, bukan di laptop/HP ini) — sengaja
+    // dipakaikan foto step "Selesai" dari tab Android TV (`Google TV/4.png`)
+    // supaya tetap ada foto TV sungguhan yang menutup alurnya, bukan mock CSS.
+    playstore: [
+      'assets/img/guide/playstore/1.jpg',
+      'assets/img/guide/playstore/2.jpg',
+      'assets/img/guide/playstore/3.jpg',
+      'assets/img/guide/playstore/4.jpg',
+      'assets/img/guide/android/4.jpg'
+    ]
+  };
 
   function renderSteps() {
     var g = GUIDES[current];
@@ -515,18 +573,36 @@
         setStep(parseInt(b.dataset.step, 10));
       });
     });
-
-    fallback.innerHTML = '<i class="ph-bold ph-lifebuoy" aria-hidden="true"></i> ' + g.note;
   }
 
   function renderScreen() {
-    var g = GUIDES[current];
-    stepScreen.innerHTML = g.steps[index].screen;
-    // restart animasi masuk
-    if (!prefersReduced) {
-      stepScreen.style.animation = 'none';
-      void stepScreen.offsetWidth;
-      stepScreen.style.animation = '';
+    var g     = GUIDES[current];
+    var shots = SHOT_IMAGES[current];
+    var shot  = shots && shots[index];
+
+    if (shot) {
+      // Foto produk asli (TV+remote sungguhan) — tampilkan langsung, TANPA
+      // mockup bezel .tv (lihat komentar di index.html kenapa).
+      guideShot.hidden = false;
+      tvMock.hidden = true;
+      guideShotImg.src = shot;
+      guideShotImg.alt = g.steps[index].t + ' — ' + g.label;
+      if (!prefersReduced) {
+        guideShotImg.style.animation = 'none';
+        void guideShotImg.offsetWidth;
+        guideShotImg.style.animation = '';
+      }
+    } else {
+      // Belum ada foto asli untuk guide ini (tab "Lewat Google Play") —
+      // pakai mockup UI buatan CSS seperti sebelumnya.
+      guideShot.hidden = true;
+      tvMock.hidden = false;
+      stepScreen.innerHTML = g.steps[index].screen;
+      if (!prefersReduced) {
+        stepScreen.style.animation = 'none';
+        void stepScreen.offsetWidth;
+        stepScreen.style.animation = '';
+      }
     }
   }
 

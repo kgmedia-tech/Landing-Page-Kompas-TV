@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="theme-color" content="#0A0A0B" />
+<meta name="theme-color" content="#04070F" />
 <title>Kompas TV untuk Smart TV — Tonton Berita di Layar Besar</title>
 <meta name="description" content="Aplikasi Kompas TV kini hadir di Smart TV. Live streaming 24 jam, program unggulan, dan tayangan on-demand langsung di layar besar rumah Anda. Gratis." />
 
@@ -54,7 +54,7 @@
     <div class="nav__actions">
       <button class="btn btn--primary btn--sm nav__cta" data-open-installer type="button">
         <i class="ph-bold ph-download-simple" aria-hidden="true"></i>
-        <span>Install Sekarang</span>
+        <span>Pasang Sekarang</span>
       </button>
       <button class="nav__burger" id="navBurger" type="button"
               aria-label="Buka menu navigasi" aria-expanded="false" aria-controls="navDrawer">
@@ -104,11 +104,10 @@
       <div class="hero__cta reveal" data-reveal data-delay="3">
         <button class="btn btn--primary btn--lg" data-open-installer type="button">
           <i class="ph-bold ph-download-simple" aria-hidden="true"></i>
-          <span>Install di Smart TV</span>
+          <span>Pasang Sekarang</span>
         </button>
         <a class="btn btn--ghost btn--lg" href="#panduan">
-          <i class="ph-bold ph-list-numbers" aria-hidden="true"></i>
-          <span>Lihat Cara Install</span>
+          <span>Panduan</span>
         </a>
       </div>
 
@@ -331,7 +330,18 @@
       <div class="guide__body">
         <!-- Stage: mock screenshot -->
         <div class="guide__stage">
-          <div class="tv tv--compact">
+          <!-- Screenshot asli (tab Android TV & Samsung/LG TV) — foto produk TV+remote
+               sungguhan, jadi TIDAK dibungkus mockup bezel .tv di bawah (dua "TV" akan
+               tampak aneh kalau ditumpuk). Tampil/sembunyi lewat kelas .is-active,
+               diatur di renderScreen() main.js. -->
+          <div class="guide__shot" id="guideShot" aria-live="polite">
+            <img id="guideShotImg" src="" alt="" />
+          </div>
+
+          <!-- Mockup TV buatan CSS — dipakai untuk tab "Lewat Google Play (HP/Laptop)"
+               yang belum punya screenshot asli. Default [hidden] karena tab pertama
+               (Android TV) sudah punya screenshot asli — lihat renderScreen() di main.js. -->
+          <div class="tv tv--compact" id="tvMock" hidden>
             <div class="tv__frame">
               <div class="tv__screen">
                 <div class="step-screen" id="stepScreen" aria-live="polite">
@@ -366,8 +376,6 @@
               <span>Berikutnya</span><i class="ph-bold ph-arrow-right" aria-hidden="true"></i>
             </button>
           </div>
-
-          <div class="guide__fallback" id="guideFallback"></div>
         </div>
       </div>
     </div>
@@ -388,42 +396,95 @@
           <i class="ph-bold ph-x" aria-hidden="true"></i>
         </button>
       </div>
-      <p id="installerDesc">Cari merek TV Anda — kami arahkan ke toko aplikasi yang tepat.</p>
+      <p id="installerDesc">Pilih merek TV Anda — kami tampilkan cara installnya.</p>
     </div>
 
-    <label class="brand-search" for="brandSearch">
-      <i class="ph-bold ph-magnifying-glass" aria-hidden="true"></i>
-      <input type="search" id="brandSearch" placeholder="Cari merek TV — misalnya Samsung, Sony, LG…" autocomplete="off" />
-    </label>
+    <!-- Tampilan 1: grid pilih merek -->
+    <div id="brandGridView">
+      <ul class="brand-grid" id="brands">
+        <li>
+          <button class="brand-tile" type="button" data-group="samsung">
+            <span class="brand-tile__ico"><img src="assets/img/brands/samsung.png" alt="" onerror="this.remove()" /><span class="brand-tile__initial">S</span></span>
+            <span class="brand-tile__name">Samsung</span>
+            <span class="brand-tile__os">Tizen OS</span>
+          </button>
+        </li>
+        <li>
+          <button class="brand-tile" type="button" data-group="lg">
+            <span class="brand-tile__ico"><img src="assets/img/brands/lg.png" alt="" onerror="this.remove()" /><span class="brand-tile__initial">L</span></span>
+            <span class="brand-tile__name">LG</span>
+            <span class="brand-tile__os">LG OS</span>
+          </button>
+        </li>
+        <li>
+          <button class="brand-tile" type="button" data-group="android">
+            <span class="brand-tile__ico"><img src="assets/img/brands/sony.png" alt="" onerror="this.remove()" /><span class="brand-tile__initial">S</span></span>
+            <span class="brand-tile__name">Sony</span>
+            <span class="brand-tile__os">Android TV</span>
+          </button>
+        </li>
+        <li>
+          <button class="brand-tile" type="button" data-group="android">
+            <span class="brand-tile__ico"><img src="assets/img/brands/tcl.png" alt="" onerror="this.remove()" /><span class="brand-tile__initial">T</span></span>
+            <span class="brand-tile__name">TCL</span>
+            <span class="brand-tile__os">Android TV</span>
+          </button>
+        </li>
+        <li>
+          <button class="brand-tile" type="button" data-group="android">
+            <span class="brand-tile__ico"><img src="assets/img/brands/xiaomi.png" alt="" onerror="this.remove()" /><span class="brand-tile__initial">X</span></span>
+            <span class="brand-tile__name">Xiaomi</span>
+            <span class="brand-tile__os">Android TV</span>
+          </button>
+        </li>
+        <li>
+          <button class="brand-tile" type="button" data-group="android">
+            <span class="brand-tile__ico"><img src="assets/img/brands/infinix.png" alt="" onerror="this.remove()" /><span class="brand-tile__initial">I</span></span>
+            <span class="brand-tile__name">Infinix</span>
+            <span class="brand-tile__os">Android TV</span>
+          </button>
+        </li>
+      </ul>
 
-    <ul class="brands" id="brands" aria-live="polite">
-      <!-- diisi oleh JS dari daftar BRANDS -->
-    </ul>
-
-    <div class="brand-empty" id="brandEmpty" hidden>
-      <span class="brand-empty__icon"><i class="ph-bold ph-magnifying-glass-minus" aria-hidden="true"></i></span>
-      <p><strong>Merek “<span id="brandEmptyQuery"></span>” tidak ditemukan.</strong></p>
-      <p>Kemungkinan aplikasi Kompas TV belum tersedia untuk TV ini. Kalau TV Anda berbasis Android&nbsp;TV / Google&nbsp;TV, tetap bisa coba lewat Google Play.</p>
-      <div class="brand-empty__actions">
-        <button class="btn btn--ghost btn--sm" type="button" data-brand-fallback="android">
-          <i class="ph-bold ph-google-play-logo" aria-hidden="true"></i><span>Coba Google Play</span>
-        </button>
-        <a class="btn btn--ghost btn--sm" href="#panduan" data-close-installer>
-          <i class="ph-bold ph-list-numbers" aria-hidden="true"></i><span>Panduan Manual</span>
-        </a>
-      </div>
+      <p class="modal__reassure">
+        <i class="ph-bold ph-broadcast" aria-hidden="true"></i>
+        <span>Tidak menemukan merek TV Anda? Jangan khawatir, Anda masih tetap bisa menonton siaran
+        langsung Kompas TV <a href="https://www.kompas.tv/live" target="_blank" rel="noopener">di sini</a>.</span>
+      </p>
     </div>
 
-    <p class="modal__note">
-      <i class="ph-bold ph-list-numbers" aria-hidden="true"></i>
-      Ingin install manual saja dari TV Anda? Yuk simak caranya
-      <a href="#panduan" data-close-installer>di sini</a>.
-    </p>
+    <!-- Tampilan 2: instruksi singkat setelah merek dipilih -->
+    <div id="brandDetailView" hidden>
+      <button class="brand-detail__back" type="button" id="brandDetailBack">
+        <i class="ph-bold ph-arrow-left" aria-hidden="true"></i><span>Pilih merek lain</span>
+      </button>
+
+      <div class="brand-detail__head" id="brandDetailHead"></div>
+
+      <ol class="brand-detail__steps" id="brandDetailSteps"></ol>
+
+      <!-- Samsung & LG berhenti di sini (tanpa CTA, tanpa catatan pengganti) —
+           langkahnya sudah cukup jelas dilakukan langsung di TV. -->
+      <button class="btn btn--primary btn--lg btn--block" id="brandDetailCta" type="button"></button>
+
+      <!-- Bukan toggle di dalam modal lagi — klik ini menutup modal & membawa
+           user ke section #panduan (tab Android TV), bukan mengganti langkah
+           di sini. Lihat brandDetailToggle click handler di main.js. -->
+      <button class="brand-detail__toggle" type="button" id="brandDetailToggle" hidden></button>
+    </div>
   </div>
 </div>
 
 <!-- Toast -->
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<!-- Scroll to top — muncul begitu user melewati section Program Unggulan.
+     Sengaja TANPA atribut [hidden]: visibilitasnya murni dikontrol oleh
+     kelas .is-visible (lihat styles.css) supaya transisi fade/slide jalan;
+     kalau pakai [hidden], display:none dari situ akan mengalahkan transition. -->
+<button class="scroll-top" id="scrollTop" type="button" aria-label="Kembali ke atas halaman">
+  <i class="ph-bold ph-arrow-up" aria-hidden="true"></i>
+</button>
 
 <script src="assets/js/main.js" defer></script>
 </body>
