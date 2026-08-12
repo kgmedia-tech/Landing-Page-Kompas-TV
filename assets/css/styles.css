@@ -359,7 +359,7 @@ h1, h2, h3, h4 {
 .section--alt > .container { position: relative; }
 
 .sec-head { max-width: 780px; margin: 0 auto var(--sp-12); text-align: center; }
-.sec-title { font-size: var(--fs-h2); margin-bottom: var(--sp-4); font-weight: 800; }
+.sec-title { font-size: var(--fs-h2); margin-bottom: var(--sp-4); font-weight: 700; }
 .sec-lede {
   font-size: var(--fs-lede); color: var(--text-mid); line-height: 1.65;
   max-width: 62ch; margin-inline: auto; text-wrap: pretty;
@@ -425,7 +425,7 @@ h1, h2, h3, h4 {
 
 .hero__title {
   font-size: var(--fs-display);
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: -0.02em;
   margin: var(--sp-5) 0 var(--sp-5);
 }

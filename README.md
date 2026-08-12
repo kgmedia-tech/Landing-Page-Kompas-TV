@@ -232,6 +232,12 @@ tidak ada typeface lain di mana pun, termasuk di dalam mock layar TV pada
 section Panduan Install. **Ikon:** [Phosphor Icons](https://phosphoricons.com)
 v2.1.2 via jsDelivr (regular / bold / fill).
 
+**Heading tiap section** (`.hero__title`, `.sec-title`) pakai `font-weight: 700`
+— sebelumnya 800, diturunkan satu tingkat atas permintaan karena dirasa terlalu
+tebal. Ini sekarang sama dengan default `h1-h4` di base style (`styles.css`,
+selector `h1, h2, h3, h4`), jadi tidak ada lagi heading section yang lebih
+tebal dari heading lain di halaman.
+
 ### Token warna (`:root` di `styles.css`)
 
 | Token | Nilai | Pakai untuk |
