@@ -12,7 +12,11 @@
   var STORE = {
     // Android TV / Google TV → Google Play (package resmi Kompas TV)
     playPackage: 'tv.kompas.kompastv',
-    playWeb:     'https://play.google.com/store/apps/details?id=tv.kompas.kompastv',
+    // Parameter `referrer` dibaca Google Play untuk atribusi campaign — muncul di
+    // Play Console → Acquisition reports, dan diteruskan ke app lewat Install
+    // Referrer API. Isinya WAJIB di-encode (= jadi %3D, & jadi %26), kalau tidak
+    // akan terbaca sebagai parameter terpisah milik URL Play Store dan hilang.
+    playWeb:     'https://play.google.com/store/apps/details?id=tv.kompas.kompastv&referrer=utm_source%3Dapp.kompas.tv%26utm_medium%3Dreferral%26utm_campaign%3Dsmarttv_landing',
     // Fallback untuk pengguna iOS yang membuka landing page ini dari iPhone/iPad
     appStore:    'https://apps.apple.com/id/app/kompas-tv-live-streaming/id539944871',
     // Samsung Tizen
