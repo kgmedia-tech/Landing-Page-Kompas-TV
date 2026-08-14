@@ -12,7 +12,7 @@ assets/
   js/main.js          ← modal store-routing, stepper panduan, scroll spy, motion
   img/
     logo-kompastv.png ← logo resmi (navbar + mock UI di dalam TV)
-    logo-mark.svg     ← PLACEHOLDER favicon / app mark
+    logo-mark.svg     ← sudah TIDAK dipakai (dulu placeholder favicon, lihat catatan di bawah)
 ```
 
 ---
@@ -251,8 +251,22 @@ modal, link ini otomatis muncul di kedua tempat tanpa kode tambahan.
 | `assets/img/guide/samsunglg/1-4.jpg` | `Samsung & LG TV/1-4.png` (root folder) | Foto langkah di tab **Samsung TV**, section Cara Install (nama folder sumber & tujuan masih menyebut LG — historis, lihat catatan di section `#panduan`) |
 | `assets/img/guide/playstore/1-4.jpg` | `Google Play Laptop/1-4.jpg` (root folder) | Foto langkah di tab **Lewat Google Play (HP/Laptop)**, section Cara Install |
 
-`assets/img/logo-mark.svg` masih **placeholder** (dipakai untuk favicon saja) —
-ganti dengan app mark resmi kalau tersedia.
+**Favicon sudah pakai aset resmi**, bukan lagi `assets/img/logo-mark.svg`
+(placeholder lama). Sekarang link langsung ke CDN `media.kompas.tv` di
+`index.html`:
+
+```html
+<link rel="shortcut icon" type="image/x-icon" href="https://media.kompas.tv/webassets/images/kompastv64.ico">
+<link rel="apple-touch-icon-precomposed" href="https://media.kompas.tv/webassets/images/kompastvicon.png">
+```
+
+`kompastv64.ico` (64×64, tab browser) dan `kompastvicon.png` (64×64, home
+screen iOS lewat `apple-touch-icon-precomposed` — atribut lama, tapi ini
+persis kode yang diberikan tim, jadi dipakai apa adanya). Keduanya dimuat dari
+server Kompas TV sendiri, bukan file lokal — kalau situs media.kompas.tv
+down atau asetnya dipindah, favicon ikut hilang; tidak ada fallback lokal.
+`assets/img/logo-mark.svg` jadi **file yatim** (tidak dirujuk di mana pun lagi)
+— aman dihapus kapan saja, dibiarkan dulu kalau-kalau mau dipakai ulang.
 
 Semua 6 merek di modal sekarang sudah punya logo asli — tidak ada lagi yang
 jatuh ke badge inisial huruf.
@@ -436,6 +450,7 @@ Diuji langsung di browser pada 375px (mobile) dan 768px:
 | Petunjuk scroll Hero — bentuk ikon | Kembali ke mouse+dot+chevron buatan CSS (bukan lagi ikon flat Phosphor) — `.scroll-cue__mouse` border `1.6px solid`, radius `999px`; 3 `.scroll-cue__chevron` dgn `animation-delay` bertingkat `0s/0.18s/0.36s`. Kontainer luar (`.scroll-cue`) tetap tanpa background/border |
 | Navbar — tinggi 80px | `.nav__inner` computed height `80px` (naik dari `66px`) di desktop maupun 375px mobile; drawer (`top:100%` relatif ke `.nav`) otomatis ikut turun, tidak perlu penyesuaian terpisah |
 | Foto langkah — refresh terbaru | `android/2.jpg`, `android/3.jpg`, `playstore/1.jpg`, `samsunglg/3.jpg` termuat ulang (900×1125) di step yang benar (dicek `src` + `naturalWidth/Height` per step, bukan cuma cek file ada) |
+| Favicon | Kedua URL (`kompastv64.ico`, `kompastvicon.png`) dicek langsung lewat `curl` (200, tipe konten benar) sebelum dipasang, lalu dicek ulang di browser lewat `new Image()` — keduanya termuat 64×64 |
 
 > Diverifikasi lewat origin `http://localhost` sungguhan, bukan snapshot.
 > Preview bawaan sesi ini me-render `file://` sebagai `data:` URL (JS & CSS
