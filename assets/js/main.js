@@ -194,6 +194,19 @@
   }
 
   /* ══════════════════════════════════════════════════════════════════════
+     PETUNJUK SCROLL DI HERO — hilang begitu user mulai scroll
+     ══════════════════════════════════════════════════════════════════════ */
+  var scrollCue = $('#scrollCue');
+  if (scrollCue) {
+    var HIDE_CUE_AFTER_PX = 60;
+    var syncCue = function () {
+      scrollCue.classList.toggle('is-hidden', window.scrollY > HIDE_CUE_AFTER_PX);
+    };
+    window.addEventListener('scroll', syncCue, { passive: true });
+    syncCue(); // halaman bisa saja dibuka dalam kondisi sudah ter-scroll (reload/anchor)
+  }
+
+  /* ══════════════════════════════════════════════════════════════════════
      MODAL — pilih merek Smart TV → arahkan ke store yang tepat
      ══════════════════════════════════════════════════════════════════════ */
   var modal            = $('#installer');
@@ -235,9 +248,13 @@
     if (e.key === 'Escape') { closeModal(); return; }
     if (e.key !== 'Tab') return;
 
-    // Focus trap
+    // Focus trap — exclude elemen disabled: elemen disabled tidak bisa
+    // menerima focus() sama sekali, jadi kalau dia kebetulan jadi elemen
+    // pertama/terakhir, wrap-around Tab/Shift+Tab bisa gagal diam-diam
+    // (focus tidak pindah ke mana pun). Ini nyata terpakai: tombol
+    // "Segera Hadir" milik Samsung memang disabled.
     var f = $$('button, a[href], [tabindex]:not([tabindex="-1"])', panel)
-      .filter(function (el) { return el.offsetParent !== null; });
+      .filter(function (el) { return el.offsetParent !== null && !el.disabled; });
     if (!f.length) return;
     var first = f[0], last = f[f.length - 1];
     if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
@@ -245,12 +262,15 @@
   });
 
   /* ─── Routing per merek ───────────────────────────────────────────────────
-     Catatan: Samsung & LG TIDAK punya tombol store di sini lagi — kedua merek
-     itu tidak bisa diinstall langsung lewat link store dari perangkat ini
-     (Samsung TV Apps / LG Content Store hanya halaman info umum, bukan link
-     instalasi). Instruksinya cukup langkah-langkah yang dilakukan di TV
-     (lihat GUIDES.samsunglg) — modal berhenti di daftar langkah, tanpa CTA
-     ataupun catatan pengganti apa pun untuk kedua merek ini. */
+     Catatan: Samsung TIDAK punya tombol store di sini — tidak bisa diinstall
+     langsung lewat link store dari perangkat ini (Samsung TV Apps hanya
+     halaman info umum, bukan link instalasi). Instruksinya cukup
+     langkah-langkah yang dilakukan di TV (lihat GUIDES.samsunglg) — modal
+     berhenti di daftar langkah, tanpa CTA (link "install langsung di TV" di
+     #brandDetailToggle tetap tampil, lihat showBrandDetail()). LG TIDAK di
+     sini lagi — di modal ini LG diperlakukan sebagai brand Android TV
+     (data-group="android" di index.html), jadi selalu masuk case 'android'
+     di bawah. */
   function handleBrand(brand) {
     switch (brand) {
       case 'android':
@@ -275,22 +295,36 @@
   }
 
   /* ─── Tampilan instruksi singkat setelah merek dipilih (di dalam modal) ──
-     Samsung & LG pakai langkah "samsunglg" (dilakukan langsung di TV, tidak
-     ada CTA store — lihat catatan di handleBrand). Brand Android TV
-     (Sony/TCL/Xiaomi/Infinix) pakai langkah "playstore" — karena landing page
-     ini dibuka dari HP/laptop, memandu lewat Google Play di perangkat yang
-     sedang dipegang user lebih relevan. Untuk yang justru mengakses landing
-     page ini dari TV-nya sendiri, ada link #brandDetailToggle yang menutup
-     modal ini dan membawa mereka ke section #panduan (tab Android TV) — bukan
-     mengganti langkah di dalam modal. ─────────────────────────────────────── */
-  var ANDROID_ONLY_GROUPS = { samsung: true, lg: true }; // brand YANG BUKAN Android TV
+     Samsung satu-satunya grup yang BUKAN Android TV di modal ini — pakai
+     langkah "samsunglg" (dilakukan langsung di TV, tidak ada CTA store, lihat
+     catatan di handleBrand). Semua brand lain (Sony/TCL/Xiaomi/Infinix, DAN
+     LG — LG sengaja diperlakukan sebagai Android TV di modal, lihat komentar
+     di tile-nya di index.html) pakai langkah "playstore" — karena landing
+     page ini dibuka dari HP/laptop, memandu lewat Google Play di perangkat
+     yang sedang dipegang user lebih relevan. Ada link #brandDetailToggle
+     ("Ingin install langsung dari TV Anda?") untuk SEMUA merek — untuk brand
+     Android TV ini alternatif ke tab #panduan yang menunjukkan cara instal
+     langsung di TV; untuk Samsung ini juga jalan keluar karena Samsung tidak
+     punya CTA store. Klik toggle menutup modal, tidak pernah mengubah langkah
+     di dalam modal itu sendiri. ────────────────────────────────────────────── */
+  var ANDROID_ONLY_GROUPS = { samsung: true }; // satu-satunya brand YANG BUKAN Android TV di modal
   function isAndroidGroup(group) { return !ANDROID_ONLY_GROUPS[group]; }
 
   function guideKeyForGroup(group) {
-    return (group === 'samsung' || group === 'lg') ? 'samsunglg' : 'playstore';
+    return group === 'samsung' ? 'samsunglg' : 'playstore';
   }
   function ctaLabelForGroup(group) {
     return 'Buka Google Play'; // hanya brand Android TV yang punya CTA ini
+  }
+  // Tab #panduan yang dituju toggle "Ingin install langsung dari TV Anda?" —
+  // beda dari guideKeyForGroup() di atas: brand Android TV di modal defaultnya
+  // menunjukkan guide "playstore" (HP/laptop), tapi toggle-nya sengaja
+  // menawarkan ALTERNATIF ke tab "android" (langsung di TV). Untuk Samsung,
+  // yang di modal memang sudah menunjukkan langkah langsung-di-TV, toggle-nya
+  // mengarah ke tab "samsunglg" (guide lengkap dengan foto, bukan versi
+  // ringkas di modal).
+  function toggleTabForGroup(group) {
+    return group === 'samsung' ? 'samsunglg' : 'android';
   }
   function brandDetailStepHTML(step, i) {
     return '<li class="brand-detail__step">' +
@@ -320,24 +354,37 @@
 
     brandDetailSteps.innerHTML = guide.steps.map(brandDetailStepHTML).join('');
 
-    // CTA "Buka Google Play" hanya relevan untuk brand Android TV — Samsung
-    // & LG tidak pernah punya CTA store (lihat catatan di handleBrand).
-    var showCta = isAndroidGroup(group);
-    brandDetailCta.hidden = !showCta;
-    if (showCta) {
+    // CTA beda per grup:
+    // - Android TV (termasuk LG) → "Buka Google Play", aktif, benar-benar
+    //   membuka store.
+    // - Samsung → "Segera Hadir", DISABLED. Aplikasinya belum rilis di Tizen,
+    //   jadi tidak ada yang bisa dibuka — tombolnya tetap ditampilkan (bukan
+    //   disembunyikan) supaya user tahu statusnya, bukan mengira fiturnya
+    //   hilang. Jalan keluarnya lewat link toggle di bawah, yang tetap tampil.
+    brandDetailCta.onclick = null; // reset dulu, supaya tidak ada handler nyangkut dari brand sebelumnya
+    brandDetailCta.hidden = false;
+    brandDetailCta.classList.toggle('btn--soon', !isAndroidGroup(group));
+    if (isAndroidGroup(group)) {
+      brandDetailCta.disabled = false;
       brandDetailCta.innerHTML =
         '<i class="ph-bold ph-arrow-square-out" aria-hidden="true"></i><span>' + ctaLabelForGroup(group) + '</span>';
       brandDetailCta.onclick = function () { handleBrand(group); };
+    } else {
+      brandDetailCta.disabled = true;
+      brandDetailCta.innerHTML =
+        '<i class="ph-bold ph-clock" aria-hidden="true"></i><span>Segera Hadir</span>';
     }
 
-    // Link "install langsung di TV" — hanya untuk brand Android TV. Klik-nya
-    // menutup modal & membawa ke section #panduan (tab Android TV), lihat
-    // listener #brandDetailToggle di bawah — bukan mengubah apa pun di sini.
-    brandDetailToggle.hidden = !isAndroidGroup(group);
-    if (isAndroidGroup(group)) {
-      brandDetailToggle.innerHTML =
-        '<i class="ph-bold ph-television-simple" aria-hidden="true"></i><span>Ingin install langsung dari TV Anda? Lihat caranya</span>';
-    }
+    // Link "Ingin install langsung dari TV Anda?" — tampil untuk SEMUA
+    // merek (bukan cuma Android TV lagi). Klik-nya menutup modal & membawa
+    // ke tab #panduan yang sesuai (lihat toggleTabForGroup() & listener
+    // #brandDetailToggle di bawah) — bukan mengubah apa pun di modal ini.
+    // `dataset.group` dipakai listener klik-nya untuk tahu tab tujuan yang
+    // benar tanpa perlu state tambahan di luar tombol ini.
+    brandDetailToggle.hidden = false;
+    brandDetailToggle.dataset.group = group;
+    brandDetailToggle.innerHTML =
+      '<i class="ph-bold ph-television-simple" aria-hidden="true"></i><span>Ingin install langsung dari TV Anda? Lihat caranya</span>';
 
     brandGridView.hidden = true;
     brandDetailView.hidden = false;
@@ -351,14 +398,17 @@
   });
 
   // "Ingin install langsung dari TV Anda? Lihat caranya" — tutup modal,
-  // ganti tab Panduan Install ke Android TV, lalu scroll ke section-nya.
-  // setPlatform() & stopAuto() didefinisikan lebih bawah di file ini, tapi
-  // aman dipanggil di sini karena function declaration di-hoist dan handler
-  // ini baru jalan setelah seluruh script selesai dieksekusi (dipicu klik user).
+  // ganti tab Panduan Install sesuai merek yang sedang tampil
+  // (toggleTabForGroup, dibaca dari dataset.group yang di-set showBrandDetail),
+  // lalu scroll ke section-nya. setPlatform() & stopAuto() didefinisikan lebih
+  // bawah di file ini, tapi aman dipanggil di sini karena function declaration
+  // di-hoist dan handler ini baru jalan setelah seluruh script selesai
+  // dieksekusi (dipicu klik user).
   brandDetailToggle.addEventListener('click', function () {
+    var targetTab = toggleTabForGroup(brandDetailToggle.dataset.group);
     closeModal();
     stopAuto();
-    setPlatform('android');
+    setPlatform(targetTab);
     var panduan = $('#panduan');
     if (panduan) panduan.scrollIntoView({ behavior: prefersReduced ? 'auto' : 'smooth', block: 'start' });
   });
@@ -404,9 +454,13 @@
       ]
     },
 
+    // Key-nya masih "samsunglg" (historis) tapi isinya SAMSUNG SAJA — LG sudah
+    // dihapus dari tab ini atas permintaan & sekarang lewat jalur Android TV /
+    // Google Play. Key sengaja tidak di-rename supaya id tab, data-guide-tab,
+    // SHOT_IMAGES, dan folder assets/img/guide/samsunglg/ tetap sinkron.
     samsunglg: {
-      label: 'Samsung TV & LG TV',
-      note: 'Aplikasi tidak muncul? Pastikan TV Anda tersambung internet dan region toko sudah diset ke Indonesia. Untuk Samsung, pastikan sudah login <strong>Samsung Account</strong> (TV keluaran 2017 ke atas); untuk LG, pastikan sudah login <strong>LG Account</strong> (webOS 4.0 ke atas). Cek juga ketersediaan aplikasi di <a href="' + STORE.samsung + '" target="_blank" rel="noopener">Samsung TV Apps</a> atau <a href="' + STORE.lg + '" target="_blank" rel="noopener">LG Content Store</a>.',
+      label: 'Samsung TV',
+      note: 'Aplikasi tidak muncul? Pastikan TV Anda tersambung internet dan region toko sudah diset ke Indonesia. Pastikan juga sudah login <strong>Samsung Account</strong> (TV keluaran 2017 ke atas). Cek juga ketersediaan aplikasi di <a href="' + STORE.samsung + '" target="_blank" rel="noopener">Samsung TV Apps</a>.',
       steps: [
         {
           t: 'Buka Menu Apps di TV',
@@ -442,7 +496,11 @@
         },
         {
           t: 'Buka atau Kunjungi Google Play Store',
-          d: 'Kunjungi Google Play Store melalui website atau aplikasi pada smartphone Android Anda.',
+          // Link CTA ditulis MENYATU di akhir kalimat deskripsi (bukan elemen
+          // terpisah) — dirender lewat innerHTML sama seperti <strong>/<a> di
+          // GUIDES.*.note lain, jadi otomatis ikut tampil di dalam kartu
+          // langkah yang sama (satu frame utuh, bukan dua blok terpisah).
+          d: 'Kunjungi Google Play Store melalui website atau aplikasi pada smartphone Android Anda. <a href="' + STORE.playWeb + '" target="_blank" rel="noopener">Kunjungi Playstore Sekarang</a>.',
           screen: searchScreen('Google Play', '', 'Ketik nama aplikasi', 'ph-cursor-click')
         },
         {
@@ -558,19 +616,40 @@
 
   function renderSteps() {
     var g = GUIDES[current];
+    // Kartu tiap langkah SENGAJA <div role="button">, bukan <button>: kalau
+    // deskripsi langkahnya (s.d) mengandung link (lihat GUIDES.playstore step
+    // 2), link itu perlu jadi bagian dalam kartu yang sama — <a> di dalam
+    // <button> itu HTML tidak valid (link-nya jadi tidak bisa diklik dengan
+    // benar), tapi <a> di dalam <div> sah-sah saja. Karena bukan elemen
+    // <button> sungguhan, keyboard activation (Enter/Space) ditangani manual
+    // di listener di bawah.
     stepsList.innerHTML = g.steps.map(function (s, i) {
       return '<li>' +
-        '<button class="step' + (i === index ? ' is-active' : '') + '" type="button" data-step="' + i + '"' +
+        '<div class="step' + (i === index ? ' is-active' : '') + '" role="button" tabindex="0" data-step="' + i + '"' +
         ' aria-current="' + (i === index ? 'step' : 'false') + '">' +
           '<span class="step__num" aria-hidden="true">' + (i + 1) + '</span>' +
           '<span><span class="step__t">' + s.t + '</span><span class="step__d">' + s.d + '</span></span>' +
-        '</button></li>';
+        '</div>' +
+      '</li>';
     }).join('');
 
     $$('.step', stepsList).forEach(function (b) {
-      b.addEventListener('click', function () {
+      b.addEventListener('click', function (e) {
+        // Klik link inline (mis. "Kunjungi Playstore Sekarang") biarkan
+        // dia yang menangani (buka tab baru) — jangan ikut memilih ulang
+        // langkah ini, sudah aktif dengan sendirinya.
+        if (e.target.closest('a')) return;
         stopAuto();
         setStep(parseInt(b.dataset.step, 10));
+      });
+      // Pengganti aktivasi keyboard native <button> (Enter & Space).
+      b.addEventListener('keydown', function (e) {
+        if (e.target.closest('a')) return; // biarkan Enter di link tetap membuka link
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          stopAuto();
+          setStep(parseInt(b.dataset.step, 10));
+        }
       });
     });
   }

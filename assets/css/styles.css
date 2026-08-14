@@ -50,6 +50,7 @@
   --section-y:  clamp(52px, 6.5vw, 96px);
   --gutter:     clamp(20px, 4.5vw, 40px);
   --container:  1200px;
+  --nav-h:      80px; /* tinggi navbar — dipakai juga di scroll-margin-top & padding-top Hero, biar sinkron di 1 tempat */
 
   /* Radii */
   --r-sm: 10px; --r-md: 14px; --r-lg: 20px; --r-xl: 28px; --r-pill: 999px;
@@ -70,6 +71,7 @@
 
   /* Layers */
   --z-backdrop: 0;  --z-content: 10; --z-rail: 20;
+  --z-scroll-cue: 90; /* di bawah navbar — petunjuk ini hilang sendiri saat scroll */
   --z-nav: 100;     --z-drawer: 110; --z-scroll-top: 150; --z-modal: 1000; --z-toast: 1200;
 }
 
@@ -231,6 +233,30 @@ h1, h2, h3, h4 {
 
 .btn[disabled] { opacity: .42; pointer-events: none; }
 
+/* Varian "belum tersedia" (mis. CTA Samsung "Segera Hadir" di modal install).
+   Bedanya dengan .btn[disabled] biasa: TIDAK dipudarkan jadi .42 — labelnya
+   justru harus terbaca, karena tujuannya memberi tahu status, bukan sekadar
+   menonaktifkan. Jadi gradient brand-nya diganti permukaan netral dengan teks
+   kontras cukup, tapi tetap jelas terbaca sebagai tombol non-aktif.
+   pointer-events dikembalikan ke auto supaya cursor not-allowed muncul —
+   aman, karena tombol [disabled] memang tidak pernah memicu event click. */
+.btn--soon[disabled] {
+  opacity: 1;
+  background: var(--surface-2);
+  border: 1px solid var(--line-strong);
+  color: var(--text-mid);
+  box-shadow: none;
+  pointer-events: auto;
+  cursor: not-allowed;
+}
+/* Matikan sisa-sisa gaya .btn--primary yang masih menempel: overlay gradient
+   merah ::after (muncul saat hover) & glow hover-nya. Tanpa ini, hover di
+   tombol non-aktif malah mengecat ulang jadi merah seolah bisa diklik. */
+.btn--soon[disabled]::after,
+.btn--soon[disabled]:hover::after { display: none; }
+.btn--soon[disabled]:hover  { box-shadow: none; }
+.btn--soon[disabled]:active { transform: none; box-shadow: none; }
+
 /* ────────────────────────────── 5. NAVBAR ───────────────────────────────── */
 .nav {
   position: fixed; top: 0; left: 0; right: 0;
@@ -251,7 +277,7 @@ h1, h2, h3, h4 {
 .nav.is-hidden { transform: translateY(-100%); }
 .nav__inner {
   display: flex; align-items: center; gap: var(--sp-6);
-  height: 66px;
+  height: var(--nav-h);
 }
 .nav__brand {
   flex: none;
@@ -349,7 +375,7 @@ h1, h2, h3, h4 {
   position: relative;
   z-index: var(--z-content);
   padding-block: var(--section-y);
-  scroll-margin-top: 78px; /* tinggi navbar (66px) + sedikit napas */
+  scroll-margin-top: calc(var(--nav-h) + 12px); /* tinggi navbar + sedikit napas */
 }
 .section--alt::before {
   content: ''; position: absolute; inset: 0;
@@ -408,7 +434,7 @@ h1, h2, h3, h4 {
 
 /* ────────────────────────────── 7. HERO ─────────────────────────────────── */
 .hero {
-  padding-top: calc(66px + var(--sp-16)); /* tinggi navbar + napas ekstra biar konten lebih ke tengah viewport */
+  padding-top: calc(var(--nav-h) + var(--sp-16)); /* tinggi navbar + napas ekstra biar konten lebih ke tengah viewport */
   padding-bottom: clamp(44px, 6vw, 88px);
   overflow: hidden;
 }
@@ -508,6 +534,92 @@ h1, h2, h3, h4 {
 }
 @media (max-width: 380px) {
   .hero__chip { padding: 7px 12px; font-size: 0.75rem; }
+}
+
+/* ─── Petunjuk scroll ──────────────────────────────────────────────────────
+   position:fixed, BUKAN dalam alur normal di dasar Hero. Alasannya: tinggi
+   Hero bisa jauh melebihi tinggi viewport (di layar sempit, kolom teks +
+   asset TV menumpuk sampai ~1300px), jadi kalau ditaruh di alur normal
+   petunjuknya justru jatuh di bawah lipatan — tidak terlihat persis saat
+   paling dibutuhkan. Fixed menjamin selalu tampil di dasar viewport berapa
+   pun tinggi Hero-nya, lalu hilang sendiri begitu user mulai scroll.
+   Dipusatkan pakai left/right/margin auto (bukan translateX) supaya properti
+   transform tetap bebas dipakai animasi bob di bawah. */
+.scroll-cue {
+  position: fixed;
+  left: 0; right: 0;
+  bottom: calc(20px + env(safe-area-inset-bottom));
+  z-index: var(--z-scroll-cue);
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  width: max-content;
+  margin: 0 auto;
+  /* Kontainer LUAR-nya sengaja TANPA frame/latar/border — cuma teks + ikon,
+     disangga bayangan teks (bukan scrim kotak) supaya tetap terbaca di atas
+     asset TV Hero yang ramai, tanpa terlihat seperti komponen berbingkai.
+     Ikon mouse di bawah TETAP punya outline sendiri — itu bagian dari bentuk
+     ikonnya (bukan "frame" komponen yang dimaksud), sesuai referensi. */
+  color: var(--text-mid);
+  text-shadow: 0 2px 10px rgba(4, 7, 15, .85);
+  font-size: var(--fs-xs); font-weight: 600; letter-spacing: .04em;
+  transition: opacity var(--dur-mid) var(--ease-out),
+              visibility var(--dur-mid) linear,
+              color var(--dur-fast) var(--ease-out);
+}
+.scroll-cue:hover { color: var(--text-hi); }
+/* Disembunyikan begitu user mulai scroll — lihat #scrollCue di main.js */
+.scroll-cue.is-hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+
+.scroll-cue__icon {
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  filter: drop-shadow(0 2px 10px rgba(4, 7, 15, .85));
+}
+.scroll-cue__mouse {
+  position: relative;
+  width: 22px; height: 34px;
+  border: 2px solid currentColor;
+  border-radius: var(--r-pill);
+  opacity: .9;
+}
+.scroll-cue__dot {
+  position: absolute;
+  top: 6px; left: 50%;
+  width: 4px; height: 4px;
+  margin-left: -2px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: scrollCueDot 1.8s var(--ease-out) infinite;
+}
+.scroll-cue__chevrons { display: flex; flex-direction: column; align-items: center; }
+.scroll-cue__chevron {
+  width: 9px; height: 9px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg);
+  animation: scrollCueChevron 1.8s var(--ease-out) infinite;
+}
+.scroll-cue__chevron + .scroll-cue__chevron { margin-top: -3px; }
+.scroll-cue__chevron:nth-child(1) { animation-delay: 0s; }
+.scroll-cue__chevron:nth-child(2) { animation-delay: .18s; }
+.scroll-cue__chevron:nth-child(3) { animation-delay: .36s; }
+
+/* Titik "roda mouse" turun & memudar — meniru gerak scroll. */
+@keyframes scrollCueDot {
+  0%   { opacity: 0; transform: translateY(0); }
+  30%  { opacity: 1; }
+  70%  { opacity: 1; }
+  100% { opacity: 0; transform: translateY(13px); }
+}
+/* Chevron menyala bergantian dari atas ke bawah — kesan "mengalir turun". */
+@keyframes scrollCueChevron {
+  0%, 100% { opacity: .2; }
+  50%      { opacity: 1; }
+}
+
+/* Hormati prefers-reduced-motion: petunjuknya tetap tampil & tetap bisa
+   diklik, hanya gerakannya yang dimatikan. */
+@media (prefers-reduced-motion: reduce) {
+  .scroll-cue__dot,
+  .scroll-cue__chevron { animation: none; opacity: .8; }
 }
 
 /* ──────────────────────── 8. SCREENSHOT ASLI (panduan install) ─────────── */
@@ -984,6 +1096,22 @@ h1, h2, h3, h4 {
 .step__d { display: block; font-size: var(--fs-xs); color: var(--text-mid); line-height: 1.55; }
 .step.is-active .step__t { color: var(--text-hi); }
 
+/* Link CTA opsional di TENGAH kalimat deskripsi langkah (mis. "Kunjungi
+   Playstore Sekarang" di akhir kalimat GUIDES.playstore step 2) — ditulis
+   langsung di dalam string `d` (lihat main.js), jadi otomatis dalam satu
+   frame/kalimat yang sama dengan penjelasannya, bukan elemen terpisah.
+   Berlaku di section #panduan (`.step__d`) maupun di modal
+   (`.brand-detail__step-desc`) — sumbernya sama-sama field `d`. */
+.step__d a,
+.brand-detail__step-desc a {
+  color: var(--text-hi);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.step__d a:hover,
+.brand-detail__step-desc a:hover { color: var(--brand-300); }
+
 .guide__nav {
   display: flex; align-items: center; justify-content: space-between;
   gap: var(--sp-3);
@@ -1152,10 +1280,11 @@ h1, h2, h3, h4 {
 .brand-detail__head h3 { font-size: 1.125rem; }
 .brand-detail__os { font-size: var(--fs-xs); font-weight: 600; color: var(--text-mid); }
 
-/* Link "install langsung di TV" — hanya untuk brand Android TV, di bawah
-   tombol CTA. Bukan tombol/kotak (tanpa border/background) — cuma teks
-   tertaut, karena aksinya membawa user pindah ke section lain (#panduan),
-   bukan mengubah apa pun di modal ini. */
+/* Link "install langsung di TV" — tampil untuk SEMUA merek, di bawah tombol
+   CTA (atau sendirian kalau CTA-nya disembunyikan, mis. Samsung). Bukan
+   tombol/kotak (tanpa border/background) — cuma teks tertaut, karena
+   aksinya membawa user pindah ke section lain (#panduan), bukan mengubah
+   apa pun di modal ini. */
 .brand-detail__toggle {
   display: flex; align-items: center; justify-content: center; gap: 8px;
   width: 100%;

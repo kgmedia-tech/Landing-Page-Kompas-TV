@@ -214,6 +214,23 @@
     </div>
 
   </div>
+
+  <!-- Petunjuk "halaman ini bisa di-scroll". Sengaja <a> ke #program, bukan
+       elemen mati — selain memberi tahu, sekali klik juga langsung membawa
+       user ke section berikutnya. Hilang sendiri begitu user mulai scroll
+       (kelas .is-hidden dari main.js), karena setelah itu petunjuknya sudah
+       tidak relevan lagi. -->
+  <a class="scroll-cue" id="scrollCue" href="#program">
+    <span class="scroll-cue__text">Gulir ke bawah</span>
+    <span class="scroll-cue__icon" aria-hidden="true">
+      <span class="scroll-cue__mouse"><span class="scroll-cue__dot"></span></span>
+      <span class="scroll-cue__chevrons">
+        <span class="scroll-cue__chevron"></span>
+        <span class="scroll-cue__chevron"></span>
+        <span class="scroll-cue__chevron"></span>
+      </span>
+    </span>
+  </a>
 </section>
 
 <!-- ══════════════════════════════ 2. PROGRAM UNGGULAN ══════════════════════════════ -->
@@ -397,8 +414,13 @@
         <button role="tab" id="tab-android" aria-controls="guidePanel" aria-selected="true"  class="guide__tab is-active" data-guide-tab="android" type="button">
           <i class="ph-bold ph-android-logo" aria-hidden="true"></i><span>Android&nbsp;TV / Google&nbsp;TV</span>
         </button>
+        <!-- Label tab-nya "Samsung TV" saja (LG sudah dihapus dari sini atas
+             permintaan — LG kini masuk jalur Android TV / Google Play). Key
+             internalnya masih "samsunglg" (id, data-guide-tab, GUIDES, folder
+             foto) — sengaja TIDAK ikut di-rename supaya perubahan ini tetap
+             kecil & rendah risiko; namanya historis, isinya Samsung saja. -->
         <button role="tab" id="tab-samsunglg" aria-controls="guidePanel" aria-selected="false" class="guide__tab" data-guide-tab="samsunglg" type="button" tabindex="-1">
-          <i class="ph-bold ph-television-simple" aria-hidden="true"></i><span>Samsung&nbsp;TV &amp; LG&nbsp;TV</span>
+          <i class="ph-bold ph-television-simple" aria-hidden="true"></i><span>Samsung&nbsp;TV</span>
         </button>
         <button role="tab" id="tab-playstore" aria-controls="guidePanel" aria-selected="false" class="guide__tab" data-guide-tab="playstore" type="button" tabindex="-1">
           <i class="ph-bold ph-google-play-logo" aria-hidden="true"></i><span>Lewat Google&nbsp;Play (HP/Laptop)</span>
@@ -481,17 +503,14 @@
     <div id="brandGridView">
       <ul class="brand-grid" id="brands">
         <li>
-          <button class="brand-tile" type="button" data-group="samsung">
-            <span class="brand-tile__ico"><img src="assets/img/brands/samsung.png" alt="" onerror="this.remove()" /><span class="brand-tile__initial">S</span></span>
-            <span class="brand-tile__name">Samsung</span>
-            <span class="brand-tile__os">Tizen OS</span>
-          </button>
-        </li>
-        <li>
-          <button class="brand-tile" type="button" data-group="lg">
+          <!-- data-group="android" (bukan "lg") — LG diperlakukan sama seperti
+               brand Android TV lainnya: guide "lewat Google Play", tombol
+               "Buka Google Play". Konsisten dengan section #panduan, yang
+               tab-nya kini "Samsung TV" saja (LG sudah dihapus dari sana). -->
+          <button class="brand-tile" type="button" data-group="android">
             <span class="brand-tile__ico"><img src="assets/img/brands/lg.png" alt="" onerror="this.remove()" /><span class="brand-tile__initial">L</span></span>
             <span class="brand-tile__name">LG</span>
-            <span class="brand-tile__os">LG OS</span>
+            <span class="brand-tile__os">Android TV</span>
           </button>
         </li>
         <li>
@@ -522,6 +541,16 @@
             <span class="brand-tile__os">Android TV</span>
           </button>
         </li>
+        <!-- Samsung sengaja ditaruh PALING AKHIR: satu-satunya merek yang
+             aplikasinya belum tersedia (tombolnya "Segera Hadir" & disabled),
+             jadi merek yang sudah bisa dipasang tampil lebih dulu. -->
+        <li>
+          <button class="brand-tile" type="button" data-group="samsung">
+            <span class="brand-tile__ico"><img src="assets/img/brands/samsung.png" alt="" onerror="this.remove()" /><span class="brand-tile__initial">S</span></span>
+            <span class="brand-tile__name">Samsung</span>
+            <span class="brand-tile__os">Tizen OS</span>
+          </button>
+        </li>
       </ul>
 
       <p class="modal__reassure">
@@ -541,13 +570,17 @@
 
       <ol class="brand-detail__steps" id="brandDetailSteps"></ol>
 
-      <!-- Samsung & LG berhenti di sini (tanpa CTA, tanpa catatan pengganti) —
-           langkahnya sudah cukup jelas dilakukan langsung di TV. -->
+      <!-- Android TV (termasuk LG) = "Buka Google Play" aktif · Samsung =
+           "Segera Hadir" DISABLED (pakai varian .btn--soon supaya labelnya
+           tetap terbaca, tidak dipudarkan seperti [disabled] biasa).
+           Lihat showBrandDetail() di main.js. -->
       <button class="btn btn--primary btn--lg btn--block" id="brandDetailCta" type="button"></button>
 
-      <!-- Bukan toggle di dalam modal lagi — klik ini menutup modal & membawa
-           user ke section #panduan (tab Android TV), bukan mengganti langkah
-           di sini. Lihat brandDetailToggle click handler di main.js. -->
+      <!-- Tampil untuk SEMUA merek — bukan toggle di dalam modal, klik ini
+           menutup modal & membawa user ke tab #panduan yang sesuai merek
+           (Android TV → tab "android"; Samsung → tab "samsunglg"), bukan
+           mengganti langkah di sini. Lihat toggleTabForGroup() & listener
+           #brandDetailToggle di main.js. -->
       <button class="brand-detail__toggle" type="button" id="brandDetailToggle" hidden></button>
     </div>
   </div>

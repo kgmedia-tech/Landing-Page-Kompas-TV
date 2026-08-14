@@ -34,20 +34,20 @@ Untuk deploy: unggah seluruh folder apa adanya ke hosting statis mana pun
 
 | # | Section | Isi |
 |---|---------|-----|
-| 0 | **Navbar** | Sticky, blur saat scroll, sembunyi saat scroll ke bawah & muncul lagi saat scroll ke atas, scroll-spy menandai section aktif, drawer di mobile. Tanpa footer (sesuai permintaan). |
-| 1 | **Hero** | Copy ajakan install + asset screenshot Smart TV + CTA "Pasang Sekarang" & "Panduan". |
+| 0 | **Navbar** | Tinggi 80px (`--nav-h`), sticky, blur saat scroll, sembunyi saat scroll ke bawah & muncul lagi saat scroll ke atas, scroll-spy menandai section aktif, drawer di mobile. Tanpa footer (sesuai permintaan). |
+| 1 | **Hero** | Copy ajakan install + asset screenshot Smart TV + CTA "Install Sekarang" & "Panduan", plus petunjuk scroll ("Gulir ke bawah") yang melayang di dasar viewport. |
 | 2 | **Program Unggulan** | 4 kartu program dengan poster asli. |
 | 3 | **Kelebihan** | Bento grid 7 item (1 kartu lebar Live Streaming + 6 kartu screenshot promo), hover memperbesar asset sedikit. |
-| 4 | **Cara Install Kompas TV** | 3 tab (Android TV/Google TV, Samsung TV & LG TV, Lewat Google Play HP/Laptop) × 4-5 langkah, **semua langkah** di ketiga tab menampilkan **foto produk asli** (langkah "Selesai" di tab Google Play meminjam foto step "Selesai" dari tab Android TV, karena instalasinya rampung di TV bukan di laptop/HP). Tidak ada lagi kotak "Aplikasi tidak muncul?" di bawah stepper — dihapus atas permintaan. |
+| 4 | **Cara Install Kompas TV** | 3 tab (Android TV/Google TV, **Samsung TV**, Lewat Google Play HP/Laptop) × 4-5 langkah, **semua langkah** di ketiga tab menampilkan **foto produk asli** (langkah "Selesai" di tab Google Play meminjam foto step "Selesai" dari tab Android TV, karena instalasinya rampung di TV bukan di laptop/HP). Tab Google Play step 2 punya link "Kunjungi Playstore Sekarang" ke halaman aplikasi. Tidak ada lagi kotak "Aplikasi tidak muncul?" di bawah stepper — dihapus atas permintaan. |
 
 ---
 
-## Alur pilih merek TV — modal "Pasang Sekarang"
+## Alur pilih merek TV — modal "Install Sekarang"
 
-Klik CTA "Pasang Sekarang" (navbar/hero) → modal tampil grid 6 logo merek
+Klik CTA "Install Sekarang" (navbar/hero) → modal tampil grid 6 logo merek
 (Samsung, LG, Sony, TCL, Xiaomi, Infinix), masing-masing dengan **keterangan OS**
-kecil di bawah nama mereknya (Tizen OS / LG OS / Android TV — lihat tabel di
-bawah). Klik logo **tidak langsung** pindah tab, tapi ganti tampilan modal jadi
+kecil di bawah nama mereknya (Tizen OS / Android TV — lihat tabel di bawah).
+Klik logo **tidak langsung** pindah tab, tapi ganti tampilan modal jadi
 instruksi singkat dulu (judul + OS + 4-5 langkah, tanpa mock layar TV supaya
 ringkas). Ada tombol "← Pilih merek lain" untuk balik ke grid. Ini disengaja —
 user yang klik CTA utama biasanya belum tahu caranya sama sekali, jadi kasih
@@ -60,45 +60,65 @@ konteks dulu sebelum diarahkan pergi.
 Instruksi di modal diambil dari data yang sama dengan section **Cara Install
 Kompas TV** (`GUIDES` di [`assets/js/main.js`](assets/js/main.js)):
 
-| Merek diklik | OS | Guide default | Tombol akhir |
+**Urutan tile-nya: LG, Sony, TCL, Xiaomi, Infinix, lalu Samsung paling akhir.**
+Samsung sengaja ditaruh terakhir karena satu-satunya merek yang aplikasinya
+belum tersedia — merek yang sudah bisa dipasang tampil lebih dulu.
+
+| Merek diklik | OS di modal | Guide default di modal | Tombol akhir |
 |---|---|---|---|
-| Samsung | Tizen OS | `GUIDES.samsunglg` | *(tidak ada — lihat catatan di bawah)* |
-| LG | LG OS | `GUIDES.samsunglg` | *(tidak ada — lihat catatan di bawah)* |
+| LG | **Android TV** | `GUIDES.playstore` ("Lewat Google Play HP/Laptop") | Buka Google Play |
 | Sony / TCL / Xiaomi / Infinix | Android TV | `GUIDES.playstore` ("Lewat Google Play HP/Laptop") | Buka Google Play |
+| Samsung *(terakhir)* | Tizen OS | `GUIDES.samsunglg` | **Segera Hadir** (disabled) |
 
-**Samsung & LG tidak punya tombol store.** Awalnya ada tombol "Buka Samsung TV
-Apps" / "Buka LG Content Store", tapi ditarik (`#brandDetailCta` disembunyikan
-untuk kedua grup ini di `showBrandDetail()`) karena kedua link itu cuma
-halaman info umum Samsung/LG — bukan link yang benar-benar menginstall Kompas TV
-di TV, jadi tombolnya menyesatkan. Sempat diganti kotak catatan
-(`#brandDetailNote`, menampilkan `GUIDES.samsunglg.note`) sebagai pengganti,
-tapi **kotak itu juga sudah dihapus** atas permintaan — untuk kedua merek ini
-modal sekarang cukup berhenti di daftar langkah (tanpa CTA, tanpa catatan apa
-pun); langkah-langkahnya sendiri sudah cukup jelas.
+**LG diperlakukan sebagai brand Android TV di modal ini** (`data-group="android"`
+di tile-nya, bukan `"lg"`) — atas permintaan eksplisit, bukan default lama.
+Efeknya: OS-nya tertulis "Android TV" (bukan "LG OS"), guide default & tombol
+akhirnya sama persis seperti Sony/TCL/Xiaomi/Infinix ("Buka Google Play" yang
+benar-benar membuka Play Store). Konsisten juga dengan section `#panduan`, yang
+tab-nya kini **"Samsung TV" saja** (LG sudah dihapus dari sana).
 
-**Link "instal langsung di TV" untuk brand Android TV.** Sony/TCL/Xiaomi/
-Infinix defaultnya diarahkan ke guide "lewat HP/Laptop" di dalam modal (karena
-orang yang buka landing page ini biasanya sedang pegang HP/laptop, bukan
-berdiri di depan TV). Tapi untuk yang justru mengakses halaman ini dari TV-nya
-sendiri, ada link teks `#brandDetailToggle` — **"Ingin install langsung dari TV
-Anda? Lihat caranya"** — diletakkan tepat **di bawah tombol "Buka Google Play"**
-(bukan di atasnya), tanpa border/kotak (murni teks tertaut, karena tidak ada
-apa pun untuk "dipilih" di sini — ini navigasi, bukan opsi ke-2), dan warnanya
-**putih netral** (`var(--text-hi)`, bukan warna brand merah — link ini bukan
-CTA ke-2 yang perlu ditonjolkan). Klik link ini **menutup modal**, mengganti
-tab section **Cara Install Kompas TV** (`#panduan`) ke **Android TV / Google TV**
-lewat `setPlatform('android')`, lalu scroll halus ke section itu — jadi user
-langsung disambut instruksi lengkap bergambar, bukan sekadar teks di dalam
-modal. Tombol ini sendiri tidak pernah mengubah apa pun di dalam modal.
+**Samsung: tombol "Segera Hadir" yang disabled.** Riwayatnya sempat
+bolak-balik — awalnya "Buka Samsung TV Apps", lalu disabled "Segera Hadir",
+lalu dihapus total, dan sekarang **kembali ke "Segera Hadir" disabled**.
+Aplikasinya belum rilis di Tizen jadi tidak ada yang bisa dibuka, tapi
+tombolnya tetap ditampilkan supaya user tahu statusnya (bukan mengira fiturnya
+hilang). Diberi kelas `.btn--soon` — lihat catatan gaya di bawah.
+
+> **Kenapa `.btn--soon`, bukan `[disabled]` biasa?** Aturan global
+> `.btn[disabled] { opacity:.42 }` kalau dipakai pada `.btn--primary` (gradient
+> merah, teks putih) membuat label "Segera Hadir" jatuh ke kontras ~1,5:1 —
+> praktis tidak terbaca, padahal justru label itulah pesannya. `.btn--soon`
+> membatalkan peredupan itu dan menggantinya dengan permukaan netral
+> (`--surface-2` + `--line-strong`, teks `--text-mid`) → **kontras terukur
+> 7,93:1**, tetap jelas terbaca sebagai tombol non-aktif. Varian ini juga
+> mematikan overlay gradient `::after` dan glow hover milik `.btn--primary`
+> (tanpa itu, hover malah mengecat ulang jadi merah seolah bisa diklik) dan
+> memasang `cursor: not-allowed`.
+
+**Link "Ingin install langsung dari TV Anda? Lihat caranya" tampil untuk
+SEMUA merek** (`#brandDetailToggle`) — diletakkan **di bawah tombol CTA**.
+Bukan tombol/kotak (tanpa border/background, warna **putih netral**
+`var(--text-hi)` — bukan warna brand merah, karena ini navigasi biasa, bukan
+CTA ke-2 yang perlu ditonjolkan). Klik-nya **menutup modal**, mengganti tab
+section **Cara Install Kompas TV** (`#panduan`), lalu scroll halus ke section
+itu — tab tujuannya beda per merek, dihitung oleh `toggleTabForGroup()`:
+
+| Merek | Tab tujuan toggle | Kenapa |
+|---|---|---|
+| Android TV (Sony/TCL/Xiaomi/Infinix/LG) | `android` | Modal defaultnya menunjukkan guide "lewat HP/Laptop" — toggle ini alternatif ke cara instal langsung di TV. |
+| Samsung | `samsunglg` | Modal Samsung sudah menunjukkan langkah langsung-di-TV (versi ringkas) — toggle ini membawa ke guide yang sama tapi versi lengkap dengan foto asli. |
+
+Tab tujuan disimpan di `brandDetailToggle.dataset.group` tiap kali
+`showBrandDetail()` dipanggil, dibaca lagi oleh listener klik-nya — jadi tidak
+perlu variabel state tambahan di luar tombolnya sendiri.
 
 **6 merek yang tampil di modal** — Samsung, LG, Sony, TCL, Xiaomi, Infinix —
 masing-masing punya `data-group` yang menentukan tujuan akhir:
 
 | `data-group` | Tujuan |
 |-------|--------|
-| `samsung` | `https://www.samsung.com/us/tvs/smart-tv/samsung-tv-apps/` (hanya link referensi di catatan, bukan tombol) |
-| `lg` | `https://us.lgappstv.com/main` — LG Content Store (hanya link referensi di catatan, bukan tombol) |
-| `android` | `https://play.google.com/store/apps/details?id=tv.kompas.kompastv` |
+| `android` | `https://play.google.com/store/apps/details?id=tv.kompas.kompastv` — dipakai LG, Sony, TCL, Xiaomi, Infinix |
+| `samsung` | *(tidak ada — tombolnya "Segera Hadir" & disabled, lihat di atas)* |
 
 Kalau mau menambah/mengurangi merek yang ditampilkan, tiles-nya ditulis manual
 di `index.html` di dalam `#brands` (dalam modal `#installer`) — bukan dari
@@ -116,8 +136,9 @@ array JS lagi:
 satunya tempat teks OS ditulis — `showBrandDetail()` di `main.js` membaca
 langsung dari `.brand-tile__os` tile yang diklik, jadi kalau menambah merek baru
 cukup isi teks OS-nya di HTML, tidak perlu ubah JS. Kalau `data-group` merek
-baru bukan `samsung`/`lg`, dia otomatis dianggap Android TV oleh
-`isAndroidGroup()` (dapat tombol CTA + toggle "instal langsung di TV").
+baru bukan `samsung`, dia otomatis dianggap Android TV oleh `isAndroidGroup()`
+(dapat tombol CTA "Buka Google Play"; toggle "instal langsung di TV" selalu
+tampil untuk semua grup, lihat di atas).
 
 Kalau file logonya belum ada, hapus saja tag `<img>` — badge otomatis jatuh ke
 inisial huruf (`.brand-tile__initial`), bukan logo palsu. Semua 6 merek saat
@@ -152,12 +173,58 @@ Dari laptop/komputer, terbuka sebagai halaman web Google Play.
 Semua URL terkumpul di satu objek `STORE` di baris paling atas
 [`assets/js/main.js`](assets/js/main.js) — tidak ada URL hardcoded di tempat lain.
 
-> **Perlu dicek tim:** Samsung dan LG belum punya deep link langsung ke halaman
-> aplikasi Kompas TV — makanya tombol store-nya ditarik dari modal (lihat di
-> atas). `STORE.samsung`/`STORE.lg` masih disimpan untuk link referensi di
-> catatan. Begitu app ID Tizen / webOS (atau deep link instalasi yang valid)
-> terbit, tombol CTA bisa dikembalikan dengan menghapus kondisi
-> `isAndroidGroup(group)` pada `showCta` di `showBrandDetail()`.
+> **Perlu dicek tim:** Samsung belum punya deep link langsung ke halaman
+> aplikasi Kompas TV — makanya tombolnya masih "Segera Hadir" & disabled.
+> `STORE.samsung`/`STORE.lg` tidak lagi dipakai di modal (LG sekarang lewat
+> `STORE.playWeb` seperti brand Android TV lain), tapi `STORE.samsung` masih
+> dipakai sebagai link referensi di `GUIDES.samsunglg.note` — data yang saat
+> ini tidak ditampilkan di UI mana pun (lihat komentar di atas `var GUIDES` di
+> `main.js`). Begitu aplikasinya rilis di Tizen, tinggal ubah cabang `else` di
+> `showBrandDetail()` jadi CTA aktif (dan lepas kelas `.btn--soon`).
+
+---
+
+## Section "Cara Install Kompas TV" (`#panduan`)
+
+Tiga tab, datanya dari `GUIDES` di [`assets/js/main.js`](assets/js/main.js):
+`android` (Android TV / Google TV), `samsunglg` (**Samsung TV**), `playstore`
+(Lewat Google Play HP/Laptop).
+
+**LG sudah dihapus dari tab kedua** atas permintaan — label tab-nya kini
+"Samsung TV" saja, dan `GUIDES.samsunglg.note` tidak lagi menyebut LG Account /
+LG Content Store. Yang **sengaja TIDAK ikut diganti** adalah nama key-nya
+(`samsunglg`) beserta turunannya: `id="tab-samsunglg"`, `data-guide-tab`,
+`SHOT_IMAGES.samsunglg`, dan folder `assets/img/guide/samsunglg/`. Alasannya
+murni menekan risiko — rename itu menyentuh 13 tempat di 2 file sekaligus,
+sementara yang diminta hanya label yang terlihat user. Namanya historis;
+isinya Samsung saja. Kalau nanti mau dirapikan, rename keempat hal di atas
+bersamaan (folder ikut) supaya tetap sinkron.
+
+**Link opsional per-langkah — MENYATU di kalimat deskripsi.** Sebuah langkah
+bisa saja punya link CTA, tapi itu ditulis **langsung di dalam string `d`**
+sebagai `<a>` inline (pola yang sama seperti `<strong>`/`<a>` di
+`GUIDES.*.note`), bukan field terpisah. Saat ini dipakai satu kali: step 2 tab
+Google Play — `d` diakhiri kalimat **"Kunjungi Playstore Sekarang"** yang jadi
+link ke halaman aplikasi Kompas TV di Play Store. Karena satu string yang
+sama dipakai baik oleh `#panduan` maupun oleh `brandDetailStepHTML()` di
+modal, link ini otomatis muncul di kedua tempat tanpa kode tambahan.
+
+> **Catatan teknis (kenapa kartu langkah di `#panduan` itu `<div role="button">`,
+> bukan `<button>`):** dulu tiap langkah dibungkus `<button class="step">`.
+> Begitu link CTA di atas ditulis inline di dalam `d`, itu berarti sebuah
+> `<a>` akan berakhir sebagai **descendant** dari `<button>` — HTML tidak
+> valid, dan link jadi tidak bisa diklik dengan benar (ini sempat jadi bug
+> nyata: link-nya dirender sebagai elemen terpisah di luar kartu, sehingga
+> box-nya terlihat "kepisah" dari CTA-nya). Perbaikannya: `.step` diganti jadi
+> `<div role="button" tabindex="0">` — `<a>` di dalam `<div>` itu sah, jadi
+> link-nya bisa langsung ditaruh di dalam `.step__d`, tetap satu frame/kartu
+> yang sama dengan teksnya. Konsekuensinya, aktivasi keyboard (Enter/Space)
+> yang biasanya gratis dari elemen `<button>` sekarang ditangani manual lewat
+> listener `keydown` di `renderSteps()`. Listener klik & keydown pada `.step`
+> juga mengecek `e.target.closest('a')` — kalau klik/Enter berasal dari link
+> di dalamnya, biarkan link itu sendiri yang menangani (buka tab baru),
+> jangan ikut memilih ulang langkahnya (toh sudah aktif). Style link inline
+> ini ada di `.step__d a, .brand-detail__step-desc a` (`styles.css`).
 
 ---
 
@@ -181,7 +248,7 @@ Semua URL terkumpul di satu objek `STORE` di baris paling atas
 | `assets/img/brands/infinix.png` | `logo brand tv/Infinix.png` | Badge merek Infinix |
 | `assets/img/promo/*.png` (6 file) | `asset promo/*.png` (root folder) | Screenshot di 6 kartu section Kelebihan |
 | `assets/img/guide/android/1-4.jpg` | `Google TV/1-4.png` (root folder) | Foto langkah di tab **Android TV / Google TV**, section Cara Install |
-| `assets/img/guide/samsunglg/1-4.jpg` | `Samsung & LG TV/1-4.png` (root folder) | Foto langkah di tab **Samsung TV & LG TV**, section Cara Install |
+| `assets/img/guide/samsunglg/1-4.jpg` | `Samsung & LG TV/1-4.png` (root folder) | Foto langkah di tab **Samsung TV**, section Cara Install (nama folder sumber & tujuan masih menyebut LG — historis, lihat catatan di section `#panduan`) |
 | `assets/img/guide/playstore/1-4.jpg` | `Google Play Laptop/1-4.jpg` (root folder) | Foto langkah di tab **Lewat Google Play (HP/Laptop)**, section Cara Install |
 
 `assets/img/logo-mark.svg` masih **placeholder** (dipakai untuk favicon saja) —
@@ -211,6 +278,19 @@ JPEG (bukan PNG) karena background-nya solid gelap, tidak butuh transparansi.
 > **`assets/img/guide/android/4.jpg`** (foto step "Selesai" dari tab Android
 > TV, sumber aslinya `Google TV/4.png`) — dipilih ulang atas permintaan, bukan
 > fallback ke mock CSS lagi seperti sebelumnya.
+
+**Riwayat refresh foto:** 4 foto sempat diganti ulang dari folder root
+`Update Cara Install Kompas TV/` — `Google TV Step 2.png` → `guide/android/2.jpg`,
+`Google TV Step 3.png` → `guide/android/3.jpg`, `Lewat Google Play HP Laptop
+Step 1.png` → `guide/playstore/1.jpg`, `Samsung TV Step 3.png` →
+`guide/samsunglg/3.jpg`. **Nama file tujuan (`1.jpg`/`2.jpg`/dst.) tidak
+berubah** — jadi tidak ada perubahan di `SHOT_IMAGES` (`main.js`), cukup
+resize+convert (proses sama seperti di atas) lalu overwrite langsung ke path
+yang sudah ada. Kalau ada refresh lagi di masa depan, pola nama foldernya
+sepertinya "Update Cara Install Kompas TV" + nama file `"<Label Tab> Step
+<N>.png"` — cocokkan `<Label Tab>` ke folder (`android`/`samsunglg`/
+`playstore`) dan `<N>` ke nomor step (1-indexed, sesuai urutan `GUIDES[key].steps`)
+sebelum overwrite.
 
 ### 2. Copywriting program
 
@@ -270,6 +350,13 @@ tebal dari heading lain di halaman.
 Type scale dan spacing (skala 4/8) juga token — ubah di satu tempat, konsisten
 di seluruh halaman.
 
+**Tinggi navbar** juga token: `--nav-h` (sekarang `80px`, sebelumnya `66px`).
+Dipakai di 3 tempat yang sinkron otomatis — `.nav__inner { height }`,
+`.section { scroll-margin-top: calc(var(--nav-h) + 12px) }` (biar anchor-jump
+ke section tidak ketutup navbar), dan `.hero { padding-top: calc(var(--nav-h)
++ var(--sp-16)) }`. Ubah nilainya di `:root` saja, tidak perlu cari-cari
+hardcode di tempat lain.
+
 ### Motion
 
 Semuanya `transform` + `opacity` saja (tidak ada animasi layout, jadi nihil CLS):
@@ -291,7 +378,30 @@ Semuanya `transform` + `opacity` saja (tidak ada animasi layout, jadi nihil CLS)
   `[hidden]` akan mengalahkan transition). Klik tombolnya → `window.scrollTo`
   ke atas, `behavior: 'smooth'` (otomatis `'auto'` kalau user mengaktifkan
   `prefers-reduced-motion`).
+- Petunjuk scroll di Hero (`#scrollCue`, teks "Gulir ke bawah" + ikon mouse
+  buatan CSS dengan titik "roda" yang turun-memudar, plus 3 chevron turun yang
+  menyala bergantian di bawahnya — meniru animasi indikator scroll yang umum
+  dipakai). **Kontainer LUAR-nya polos** — tanpa frame/latar/border/scrim,
+  cuma teks + ikon, dijaga tetap terbaca di atas asset TV Hero yang ramai
+  lewat `text-shadow`/`drop-shadow`, bukan kotak latar. **Outline mouse-nya
+  sendiri TETAP ada** (bagian dari bentuk ikon, bukan "frame" komponen yang
+  dimaksud saat diminta dihapus).
+  > Riwayat: versi awal pakai bentuk ini juga (mouse + wheel CSS), lalu sempat
+  > diganti jadi ikon flat Phosphor tunggal (`ph-mouse-scroll`) — niatnya cuma
+  > melepas scrim pill di sekitarnya, tapi ikutan mengganti bentuk ikonnya, jadi
+  > tidak sesuai maksud aslinya. Dikembalikan ke bentuk mouse+chevron
+  > (`.scroll-cue__mouse`/`__dot`/`__chevrons`) sambil scrim-nya tetap dilepas.
+
+  Hilang (`.is-hidden`) begitu `scrollY > 60`, muncul lagi kalau balik ke atas.
+  **`position: fixed` di dasar viewport, bukan di alur normal Hero** — ini
+  disengaja: tinggi Hero bisa ~1300px di layar sempit sementara viewport hanya
+  ~790px, jadi kalau ditaruh di alur normal petunjuknya justru jatuh ~400px di
+  bawah lipatan alias tidak terlihat persis saat paling dibutuhkan (ini sempat
+  terjadi & ketahuan waktu diukur). Dipusatkan pakai `left/right:0 + margin
+  auto`, **bukan** `translateX(-50%)`. Elemennya `<a href="#program">`, jadi
+  sekali klik juga langsung membawa ke section berikutnya.
 - `prefers-reduced-motion: reduce` mematikan seluruh animasi & smooth scroll
+  (termasuk animasi bob petunjuk scroll — elemennya tetap tampil & bisa diklik)
 
 ---
 
@@ -305,7 +415,7 @@ Diuji langsung di browser pada 375px (mobile) dan 768px:
 | Touch target | Semua tombol/link non-inline ≥ 44×44px |
 | Kontras teks (WCAG AA) | Body 9,95:1 · H1 18,61:1 · teks tersier 6,01:1 · CTA putih di gradient 5,24–9,08:1 · badge LIVE 4,85:1 |
 | Font | Source Sans 3 termuat, Phosphor termuat, tidak ada emoji sebagai ikon |
-| Modal — grid → instruksi | Klik tile → tampilan ganti ke instruksi (Samsung 4 langkah, LG 4 langkah, Sony 5 langkah, step 1 = "Pastikan Akun Google Anda Sama" untuk Android TV) sesuai `GUIDES` yang benar; tombol akhir & label sesuai merek, membuka URL yang tepat tanpa navigasi halaman ini ikut pindah |
+| Modal — grid → instruksi | Klik tile → tampilan ganti ke instruksi (Samsung 4 langkah dari `GUIDES.samsunglg`; LG & Sony 5 langkah dari `GUIDES.playstore`, step 1 = "Pastikan Akun Google Anda Sama") sesuai `GUIDES` yang benar; tombol akhir & label sesuai merek, membuka URL yang tepat tanpa navigasi halaman ini ikut pindah |
 | Modal — tombol kembali | Balik ke grid, fokus kembali ke tile pertama |
 | Modal — teks reassurance | Link "di sini" mengalir wajar di dalam paragraf (bukan melompat ke kanan sebagai kolom flex terpisah) |
 | Modal | Focus trap aktif, Esc menutup, fokus kembali ke tombol pemicu, scroll body terkunci |
@@ -315,7 +425,33 @@ Diuji langsung di browser pada 375px (mobile) dan 768px:
 | Foto langkah — ketiga tab | Android TV & Samsung/LG TV: 4 foto/tab termuat (900×1125), urutan `src` sejajar step aktif. Google Play sekarang 5 langkah (bukan 6 — "Klik Install" sudah digabung ke "Pilih Install di Perangkat Lain"): step 1-3 foto `playstore/1-3.jpg`, step 4 `playstore/4.jpg`, step 5 "Selesai" pakai `guide/android/4.jpg` (dicek satu-satu lewat `src`/`hidden` tiap step, bukan cuma tab default) |
 | Cara Install — kotak "Aplikasi tidak muncul?" | `#guideFallback` sudah tidak ada di DOM (dicek di ketiga tab) |
 | Modal — kotak "Tidak menemukan merek TV" | `.modal__reassure` netral: bg `rgba(255,255,255,.04)` / border `rgba(255,255,255,.09)` (bukan lagi merah), ikon & link `var(--text-mid)`/`var(--text-hi)` |
-| Modal — Samsung & LG | Tidak ada CTA, tidak ada kotak catatan (`#brandDetailNote` sudah tidak ada di DOM), toggle "instal langsung di TV" ikut tersembunyi (memang hanya untuk brand Android TV) |
 | Modal — toggle "instal langsung di TV" | Warna teks putih netral (`rgb(242,246,255)` = `var(--text-hi)`), bukan merah |
+
+| Modal — urutan tile | LG, Sony, TCL, Xiaomi, Infinix, **Samsung terakhir** |
+| Modal — Samsung | CTA tampil & `disabled`, label "Segera Hadir", kelas `.btn--soon` aktif → `opacity:1`, bg `rgba(255,255,255,.063)`, teks `#A9B7D0`, `cursor:not-allowed`; **kontras label 7,93:1** (vs ~1,5:1 kalau pakai `[disabled]` default) |
+| Modal — Samsung → toggle | Klik "Ingin install langsung dari TV Anda?" → modal tertutup, tab aktif jadi `samsunglg` (label "Samsung TV", 4 langkah, step 1 "Buka Menu Apps di TV"), halaman ter-scroll ke `#panduan` (top 115px) |
+| Modal — LG | `data-group="android"`, OS "Android TV", guide `GUIDES.playstore`, CTA "Buka Google Play" aktif |
+| Cara Install — label tab | "Android TV / Google TV" · "Samsung TV" · "Lewat Google Play (HP/Laptop)" — LG sudah tidak muncul |
+| Step link Google Play — 1 frame | `.step` step 2 = `<div role="button">` (bukan `<button>`); `<a>` "Kunjungi Playstore Sekarang" ada **di dalam** `.step__d` yang sama (`link.parentElement === desc`), bukan elemen adik terpisah lagi. Klik area kartu (bukan link) → step terpilih (`stepCount` update). Klik link langsung → href tetap benar, tidak error, step yang sudah aktif tidak berubah. Keyboard: `focus()` + `keydown Enter` pada kartu → step terpilih tanpa perlu klik. Link yang sama otomatis muncul juga di `#brandDetailSteps` (modal), sumbernya field `d` yang sama |
+| Petunjuk scroll Hero — bentuk ikon | Kembali ke mouse+dot+chevron buatan CSS (bukan lagi ikon flat Phosphor) — `.scroll-cue__mouse` border `1.6px solid`, radius `999px`; 3 `.scroll-cue__chevron` dgn `animation-delay` bertingkat `0s/0.18s/0.36s`. Kontainer luar (`.scroll-cue`) tetap tanpa background/border |
+| Navbar — tinggi 80px | `.nav__inner` computed height `80px` (naik dari `66px`) di desktop maupun 375px mobile; drawer (`top:100%` relatif ke `.nav`) otomatis ikut turun, tidak perlu penyesuaian terpisah |
+| Foto langkah — refresh terbaru | `android/2.jpg`, `android/3.jpg`, `playstore/1.jpg`, `samsunglg/3.jpg` termuat ulang (900×1125) di step yang benar (dicek `src` + `naturalWidth/Height` per step, bukan cuma cek file ada) |
+
+> Diverifikasi lewat origin `http://localhost` sungguhan, bukan snapshot.
+> Preview bawaan sesi ini me-render `file://` sebagai `data:` URL (JS & CSS
+> eksternal tidak ikut termuat), jadi project di-serve dulu lewat static
+> server PowerShell kecil di `scratchpad/serve.ps1` (port 8099, `no-store`).
+> Dua keanehan yang **bukan** bug produk, hanya friksi alat ukur: (1)
+> `window.scrollTo()` tidak jalan karena `html { scroll-behavior: smooth }`
+> menganimasikannya — harus set `scrollBehavior='auto'` dulu atau pakai wheel
+> event sungguhan; (2) tool screenshot sesekali mengembalikan frame hitam di
+> posisi scroll dalam, padahal pengukuran DOM menunjukkan elemennya ada &
+> ter-render.
+
+Perubahan terbaru juga dicek ulang di **375px (mobile)**: 0 horizontal overflow
+(baik saat modal tertutup maupun terbuka), petunjuk scroll tetap utuh & center
+di dalam viewport, tombol "Segera Hadir" tidak melebar keluar layar, dan link
+"Kunjungi Playstore Sekarang" tetap sejajar dengan teks langkahnya (109px vs
+110px) tanpa mendorong lebar halaman.
 
 **Belum diuji:** perangkat fisik (iOS Safari, Smart TV browser).
